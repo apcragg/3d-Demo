@@ -180,15 +180,19 @@ vec4 calculateFog()
 		return vec4(0);
 }
 
-void main()
+void calculateNormals()
 {
-	//pre comp fixes
-	normal = normalize(object_normal);
-	
 	if(normalMap == 1)
 	{
 		normal = tbnMatrix * (2f * texture2D(tex1, uvCoords).xyz - 1f);
 	}
+}
+
+void main()
+{
+	//pre comp fixes
+	normal = normalize(object_normal);
+	calculateNormals();
 
 	//main lighting
 	vec4 lightColor 		= calculateLight(mainLight.base, mainLight.direction, 1);

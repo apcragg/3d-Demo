@@ -5,15 +5,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import engine.components.Component;
 import engine.main.Game;
 
-public class LightingHandler 
+public class LightingHandler implements Component
 {
-	public static List<Light> lights;
-	public static List<Light> pointLights;
-	public static List<Light> spotLights;
+	public  List<Light> lights;
+	public  List<Light> pointLights;
+	public  List<Light> spotLights;
 	
-	public static List<Iterable<Light>> lightCollection;
+	public  List<Iterable<Light>> lightCollection;
 	
 	public LightingHandler()
 	{
@@ -80,6 +81,16 @@ public class LightingHandler
 		}
 		
 		return false;	
+	}
+
+	public void render() 
+	{
+		
+	}
+
+	public void setup() 
+	{
+		
 	}
 	
 }

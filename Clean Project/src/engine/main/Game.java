@@ -1,10 +1,10 @@
 package engine.main;
 
 import engine.levels.Level;
-import engine.levels.MainLevel;
 import engine.shaders.PhongShader;
 import engine.util.InputHelper;
 import engine.util.LogHelper;
+import game.levels.MainLevel;
 
 public class Game
 {

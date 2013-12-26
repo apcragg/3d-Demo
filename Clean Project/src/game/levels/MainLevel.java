@@ -1,19 +1,16 @@
-package engine.levels;
+package game.levels;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
 import world.scenery.SceneryPool;
+import engine.levels.Level;
 import engine.lighting.AmbientLight;
-import engine.lighting.DirectionalLight;
-import engine.lighting.Light;
 import engine.lighting.LightingHandler;
 import engine.lighting.PlayerSpotLight;
 import engine.lighting.PointLight;
-import engine.lighting.SpotLight;
 import engine.main.Game;
 import engine.main.Main;
 import engine.main.Window;
@@ -28,8 +25,6 @@ import engine.shaders.PhongShader;
 import engine.util.InputHelper;
 import engine.util.MaterialLoader;
 import engine.util.ObjectLoader;
-import engine.util.ProfilerHelper;
-
 
 public class MainLevel extends Level
 {

@@ -20,6 +20,16 @@ public class AmbientLight implements Light
 		Game.shader.uniformData3f("ambient.base.color", baseColor);	
 		Game.shader.uniformData1f("ambient.base.intensity", intensity);	
 	}
+	
+	public void render() 
+	{
+		
+	}
+
+	public void setup() 
+	{
+		
+	}
 
 	public int compareTo(Light l) 
 	{	
@@ -45,13 +55,4 @@ public class AmbientLight implements Light
 		this.intensity = intensity;
 	}
 
-	public void render() 
-	{
-		
-	}
-
-	public void setup() 
-	{
-		
-	}
 }

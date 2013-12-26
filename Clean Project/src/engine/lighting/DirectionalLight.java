@@ -21,6 +21,16 @@ public class DirectionalLight implements Light
 		Game.shader.uniformData1f("mainLight.base.intensity", intensity);	
 		Game.shader.uniformData3f("mainLight.direction", direction);	
 	}
+	
+	public void render() 
+	{
+		
+	}
+
+	public void setup() 
+	{
+		
+	}
 
 	public Vector3f getColor() {
 		return color;
@@ -53,14 +63,5 @@ public class DirectionalLight implements Light
 		
 		return -1;
 	}
-	
-	public void render() 
-	{
-		
-	}
 
-	public void setup() 
-	{
-		
-	}
 }

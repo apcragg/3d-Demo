@@ -1,0 +1,46 @@
+package engine.lighting;
+
+import engine.main.Game;
+import engine.math.Vector3f;
+
+public class AmbientLight implements Light
+{
+	private Vector3f baseColor;
+	private float intensity;
+	
+	public AmbientLight(float intensity, Vector3f color)
+	{
+		this.intensity = intensity;
+		this.baseColor = color;
+	}
+	
+	public void update() 
+	{
+		Game.shader.uniformData3f("ambient.base.color", baseColor);	
+		Game.shader.uniformData1f("ambient.base.intensity", intensity);	
+	}
+
+	public int compareTo(Light l) 
+	{	
+		if(l instanceof AmbientLight)
+			return 0;
+		
+		return -1;
+	}
+	
+	public Vector3f getBaseColor() {
+		return baseColor;
+	}
+
+	public void setBaseColor(Vector3f baseColor) {
+		this.baseColor = baseColor;
+	}
+
+	public float getIntensity() {
+		return intensity;
+	}
+
+	public void setIntensity(float intensity) {
+		this.intensity = intensity;
+	}
+}

@@ -1,0 +1,24 @@
+[STDOUT] C:\Users\Andrew\git\Lwjgl-Project\Clean Project/res/shaders/VertexShader.vs
+[STDOUT] C:\Users\Andrew\git\Lwjgl-Project\Clean Project/res/shaders/FragmentShader.fs
+[STDERR] Could not create uniform tex2
+[STDERR] Could not create uniform tex3
+[STDOUT] default added as a new material.
+[STDOUT] 4c3a5ba5_dds added as a new material.
+[STDOUT] Loaded new Material: 4c3a5ba5_dds
+[STDOUT] 52bac0e2_dds added as a new material.
+[STDOUT] Loaded new Material: 52bac0e2_dds
+[STDOUT] Texture loaded from: 52BAC0E2.png
+[STDOUT] 1e5f86cc_dds added as a new material.
+[STDOUT] Loaded new Material: 1e5f86cc_dds
+[STDOUT] Texture loaded from: 1E5F86CC.png
+[STDOUT] f7820135_dds added as a new material.
+[STDOUT] Loaded new Material: f7820135_dds
+[STDOUT] Texture loaded from: F7820135.png
+[STDOUT] 146b809b_dds added as a new material.
+[STDOUT] Loaded new Material: 146b809b_dds
+[STDOUT] Texture loaded from: 146B809B.png
+[STDOUT] testMaterial added as a new material.
+[STDOUT] lightMaterial added as a new material.
+[STDOUT] wood added as a new material.
+[STDOUT] stone added as a new material.
+[STDOUT] Quiting...

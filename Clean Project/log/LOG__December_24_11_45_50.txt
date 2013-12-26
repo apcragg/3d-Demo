@@ -1,0 +1,10 @@
+[STDOUT] C:\Users\Andrew\git\Lwjgl-Project\Clean Project/res/shaders/VertexShader.vs
+[STDOUT] C:\Users\Andrew\git\Lwjgl-Project\Clean Project/res/shaders/FragmentShader.fs
+[STDERR] Could not create uniform tex2
+[STDERR] Could not create uniform tex3
+[STDOUT] Loaded new Material: 4c3a5ba5_dds
+[STDOUT] Loaded new Material: 52bac0e2_dds
+[STDOUT] Loaded new Material: 1e5f86cc_dds
+[STDOUT] Loaded new Material: f7820135_dds
+[STDOUT] Loaded new Material: 146b809b_dds
+[STDOUT] Quiting...

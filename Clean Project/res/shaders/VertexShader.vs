@@ -8,6 +8,10 @@ layout(location = 3) in vec3 tangent;
 uniform mat4 projectedSpace;
 uniform mat4 worldSpace;
 uniform mat4 viewSpace;
+uniform int displacementMaping;
+
+uniform sampler2d displacementMap;
+uniform float displacementFactor;
 
 out vec3 world_pos;
 out vec3 object_normal;
@@ -27,8 +31,25 @@ mat3  calculateTBN()
 	return mat3(t, bitangent, object_normal);
 }
 
+void calculateDisplacement()
+{
+	if(displacementMapping == 1)
+	{
+		vec3 mapColor = texture2D(uv, displacementMap).xyz;
+		float dFactor = 1.0f - length(mapColor);
+		
+		world_pos = position + normalize(object_normal) * dFactor *  displacementFactor;
+	}
+	else
+	{
+		world_pos = position;
+	}
+}
+
 void main()
 {
+	calculateDisplacement();
+
 	world_pos = (worldSpace * vec4(position, 1f)).xyz;
 	object_uvs = uv;
 	object_normal = normalize(worldSpace * vec4(normal, 0.0f)).xyz;

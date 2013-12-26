@@ -2,7 +2,7 @@ package engine.main;
 
 import org.lwjgl.opengl.*;
 
-import engine.renderer.RenderUtil;
+import engine.renderer.RenderHelper;
 
 public class Main
 {
@@ -62,7 +62,7 @@ public class Main
 				frameTime = 0;
 			}
 			
-			RenderUtil.clear();	
+			RenderHelper.clear();	
 		}
 		
 		quit();	

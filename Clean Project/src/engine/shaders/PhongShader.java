@@ -1,4 +1,4 @@
-package engine.renderer;
+package engine.shaders;
 
 import engine.util.ShaderLoader;
 import static org.lwjgl.opengl.GL20.*;

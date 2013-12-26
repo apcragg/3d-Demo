@@ -3,10 +3,10 @@ package engine.renderer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
-public class RenderUtil
+public class RenderHelper
 {
 
-	public RenderUtil()
+	public RenderHelper()
 	{
 		setUp();
 	}

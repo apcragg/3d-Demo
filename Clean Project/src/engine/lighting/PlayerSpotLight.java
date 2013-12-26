@@ -5,7 +5,7 @@ import org.lwjgl.input.Keyboard;
 import engine.main.Game;
 import engine.math.Vector3f;
 import engine.renderer.Camera;
-import engine.renderer.PhongShader;
+import engine.shaders.PhongShader;
 import engine.util.InputHelper;
 
 public class PlayerSpotLight extends SpotLight

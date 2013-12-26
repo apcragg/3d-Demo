@@ -1,7 +1,5 @@
-package engine.polygons;
+package engine.math;
 
-import engine.math.Matrix4f;
-import engine.math.Vector3f;
 import engine.renderer.Camera;
 
 public class Transform

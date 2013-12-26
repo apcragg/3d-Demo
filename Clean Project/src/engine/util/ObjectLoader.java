@@ -15,7 +15,7 @@ import engine.math.Vector2f;
 import engine.math.Vector3f;
 import engine.polygons.Vertex;
 
-public class OBJLoader
+public class ObjectLoader
 {
 	public static List<Vertex> loadOBJ(String path)
 	{

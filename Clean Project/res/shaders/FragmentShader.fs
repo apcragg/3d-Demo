@@ -2,22 +2,10 @@
 #define MAX_POINT_LIGHTS 64
 #define MAX_SPOT_LIGHTS 8
 
-in vec3 pos;
+in vec3 world_pos;
 in vec3 object_normal;
-in vec2 uvs;
+in vec2 object_uvs;
 in mat3 tbnMatrix;
-
-uniform sampler2D tex0;
-uniform sampler2D tex1;
-uniform sampler2D tex2;
-uniform sampler2D tex3;
-
-uniform int normalMap;
-
-uniform int specExp;
-uniform float specIntensity;
-uniform vec3 specColor;
-uniform vec3 cameraPos;
 
 struct BaseLight
 {
@@ -51,30 +39,42 @@ struct SpotLight
 	BaseLight base;
 };
 
+//Light uniforms
 uniform DirectionalLight mainLight;
 uniform AmbientLight ambient;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform int plNum;
 uniform int slNum;
+
+//textures
+uniform sampler2D tex0;
+uniform sampler2D tex1;
+uniform sampler2D tex2;
+uniform sampler2D tex3;
 uniform float textureScale;
 
-vec2 uvCoords = uvs / textureScale;
+//materials
+uniform int normalMap;
+uniform int specExp;
+uniform float specIntensity;
+uniform vec3 specColor;
 
+//Camera uniforms
+uniform vec3 cameraPos;
 
-
+vec2 uvCoords = object_uvs / textureScale;
 vec3 totalSpec = vec3(0f, 0f, 0f);
 vec3 normal;
+float attenuation = 1f;
+float fogFalloff = 150f;
 
 out vec4 color;
-
-float attenuation = 1f;
 
 vec4 textureColor()
 {
     return texture2D(tex0, uvCoords);
 }
-
 
 vec4 calculateSpecular(BaseLight base, vec3 direction)
 {
@@ -83,7 +83,7 @@ vec4 calculateSpecular(BaseLight base, vec3 direction)
 	
 	float cosAI = clamp(dot(normal, -direction), 0f, 1f);
 	
-	vec3 viewVector = normalize(cameraPos - pos);
+	vec3 viewVector = normalize(cameraPos - world_pos);
 	vec3 halfAngle = normalize(viewVector - direction);
 	
 	//cosine of the angle between the half angle and normal. Is 1 if it is a perfect reflection.
@@ -105,8 +105,6 @@ vec4 calculateLight(BaseLight base, vec3 direction, int spec)
     vec4 textureColor = textureColor();
 
     vec4 finalDiffuse = vec4((directionalStrength * textureColor  * base.intensity * vec4(base.color, 1f)).xyz, 1f);
-
-    //end diffuse
 	
 	if(spec == 1)
 		totalSpec += calculateSpecular(base, direction).xyz;
@@ -118,7 +116,7 @@ vec4 calculatePointLights(PointLight p)
 {
 	vec4 totalLight = vec4(0f, 0f, 0f, 1f);
 
-	vec3 direction = pos - p.pos;
+	vec3 direction = world_pos - p.pos;
 		
 	float distance = length(direction);
 		
@@ -146,11 +144,11 @@ vec4 pointLightsLoop()
 vec4 calculateSpotLights(SpotLight s)
 {
 	vec4 totalLight = vec4(0f, 0f, 0f, 1f);
-	float spotFactor = dot(normalize(pos - s.position), normalize(s.direction));
+	float spotFactor = dot(normalize(world_pos - s.position), normalize(s.direction));
 	
 	if((spotFactor > s.angle))
 	{
-		totalLight +=  (calculateLight(s.base, s.direction, 0) / length(pos - s.position)) 
+		totalLight +=  (calculateLight(s.base, s.direction, 0) / length(world_pos - s.position)) 
 						* (1.0 - (1.0 - spotFactor)/(1.0 - s.angle));;
 	}
 	
@@ -169,43 +167,42 @@ vec4 spotLightLoop()
 	return totalLight;
 }
 
-float calculateFog()
+vec4 calculateFog()
 {
-	float distance = length(cameraPos - pos);
+	float distance = length(cameraPos - world_pos);
 	
-	if(distance > 150f)
+	if(distance > fogFalloff)
 	{
-		distance = distance - 150f;
-		return 1f - (1f / pow(2.71828, distance * .033f * .0033f * distance));
+		distance = distance - fogFalloff;
+		return vec4(1f - (1f / pow(2.71828, distance * .033f * .0033f * distance)));
 	}
 	else
-		return 0;
+		return vec4(0);
 }
 
 void main()
 {
 	//pre comp fixes
 	normal = normalize(object_normal);
-	//uvCoords.x *= -1;
 	
 	if(normalMap == 1)
 	{
-		//vec2 uvs0 = uvs + (normalize(cameraPos - pos) * tbnMatrix).xy;
 		normal = tbnMatrix * (2f * texture2D(tex1, uvCoords).xyz - 1f);
 	}
 
 	//main lighting
-	vec4 lightColor = calculateLight(mainLight.base, mainLight.direction, 1);
-	vec4 ambientColor = vec4(ambient.base.color * ambient.base.intensity, 1f) * textureColor();
-	vec4 pointLightColor = pointLightsLoop();
-	vec4 spotLightColor = spotLightLoop();
- 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + (vec4(1f, 1f, 1f, 1f) * calculateFog()) + spotLightColor;
+	vec4 lightColor 		= calculateLight(mainLight.base, mainLight.direction, 1);
+	vec4 ambientColor 		= vec4(ambient.base.color * ambient.base.intensity, 1f) * textureColor();
+	vec4 pointLightColor 	= pointLightsLoop();
+	vec4 spotLightColor 	= spotLightLoop();
+	vec4 fogColor 			= calculateFog();
+	
+	//final color addition
+ 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + fogColor + spotLightColor;
 	
 	//gamma
 	color.x = pow(color.x, 1f/1.8f);
 	color.y = pow(color.y, 1f/1.8f);
 	color.z = pow(color.z, 1f/1.8f);
-	
-	//color = color * .00001f + vec4(normal, 1f);
 }
 

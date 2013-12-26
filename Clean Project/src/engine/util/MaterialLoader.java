@@ -9,7 +9,7 @@ import engine.materials.Material;
 import engine.materials.Texture;
 import engine.math.Vector3f;
 
-public class MTLLoader
+public class MaterialLoader
 {
 	public static boolean loadMaterial(String path)
 	{

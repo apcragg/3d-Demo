@@ -1,6 +1,8 @@
 package engine.lighting;
 
-public interface Light extends Comparable<Light>
+import engine.components.Component;
+
+public interface Light extends Comparable<Light>, Component
 {
 	public void update();
 }

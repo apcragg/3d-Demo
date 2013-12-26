@@ -53,4 +53,14 @@ public class DirectionalLight implements Light
 		
 		return -1;
 	}
+	
+	public void render() 
+	{
+		
+	}
+
+	public void setup() 
+	{
+		
+	}
 }

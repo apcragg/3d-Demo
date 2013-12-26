@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 
-import world.scenery.SceneryHandler;
+import world.scenery.SceneryPool;
 import engine.lighting.AmbientLight;
 import engine.lighting.DirectionalLight;
 import engine.lighting.Light;
@@ -19,24 +19,22 @@ import engine.main.Main;
 import engine.main.Window;
 import engine.materials.Material;
 import engine.materials.Texture;
+import engine.math.Transform;
 import engine.math.Vector3f;
-import engine.polygons.MeshCollection;
 import engine.polygons.StandardMesh;
-import engine.polygons.Transform;
 import engine.polygons.Vertex;
 import engine.renderer.Camera;
-import engine.renderer.PhongShader;
+import engine.shaders.PhongShader;
 import engine.util.InputHelper;
-import engine.util.MTLLoader;
-import engine.util.OBJLoader;
-import engine.util.Profile;
+import engine.util.MaterialLoader;
+import engine.util.ObjectLoader;
+import engine.util.ProfilerHelper;
 
 
 public class MainLevel extends Level
 {
-	private MeshCollection testBoxes;
 	private LightingHandler lights;
-	private SceneryHandler pool;
+	private SceneryPool pool;
 	private List<Vertex> basicModel;
 	
 	private List<StandardMesh> meshes;
@@ -49,11 +47,10 @@ public class MainLevel extends Level
 	
 	private void setup()
 	{
-		testBoxes 	= new MeshCollection();
 		lights 		= new LightingHandler();
 		meshes		= new ArrayList<StandardMesh>();
 		
-		basicModel	= OBJLoader.loadOBJ("/res/OBJ/light.obj");
+		basicModel	= ObjectLoader.loadOBJ("/res/OBJ/light.obj");
 		
 		new Camera();
 		
@@ -66,11 +63,11 @@ public class MainLevel extends Level
 		Transform.setupPerspective(Window.ASPECT_RATIO, 85, 1000f);
 		PhongShader.useProgram();
 		
-		MTLLoader.loadMaterial("/res/mtl/ground.mtl");
-		MTLLoader.loadMaterial("/res/mtl/sphere.mtl");
+		MaterialLoader.loadMaterial("/res/mtl/ground.mtl");
+		MaterialLoader.loadMaterial("/res/mtl/sphere.mtl");
 		
 		StandardMesh teapot = new StandardMesh();
-		teapot.addVertices(OBJLoader.loadOBJ("/res/OBJ/sphere.obj"));
+		teapot.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
 		teapot.setScale(1f);
 		teapot.setTranslation(new Vector3f(0f, 15.725f, 0f)); //5.725f
 		teapot.formMesh();
@@ -87,7 +84,7 @@ public class MainLevel extends Level
 		//lightMaterial.setTexture(1, new Texture("weirdNormal.jpg").getTexture().getTextureID());
 		
 		StandardMesh floor = new StandardMesh();
-		floor.addVertices(OBJLoader.loadOBJ("/res/OBJ/floor.obj"));
+		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/floor.obj"));
 		floor.setMaterial("stone");
 		floor.setTranslation(new Vector3f());
 		floor.setTextureScale(.25f);
@@ -107,7 +104,7 @@ public class MainLevel extends Level
 		stone.setSpecularExponenet(128);
 		
 		StandardMesh house = new StandardMesh();
-		house.addVertices(OBJLoader.loadOBJ("/res/OBJ/ground.obj"));
+		house.addVertices(ObjectLoader.loadOBJ("/res/OBJ/ground.obj"));
 		house.setMaterial("GroundMtl");
 		house.setTranslation(new Vector3f(120f, 0f, 120f));
 		house.setTextureScale(1f);
@@ -115,7 +112,7 @@ public class MainLevel extends Level
 		house.setScale(.25f);
 		meshes.add(house);
 		
-		pool = new SceneryHandler();
+		pool = new SceneryPool();
 		
 		for(int i = 0 ; i < 250; i++)
 		{
@@ -131,7 +128,6 @@ public class MainLevel extends Level
 		Game.shader.uniformData4f("viewSpace", Transform.viewSpace());
 		Game.shader.uniformData4f("projectedSpace", Transform.perspectiveMatrix());
 		
-		testBoxes.render();
 		pool.render();
 		
 		for(StandardMesh m : meshes)
@@ -150,7 +146,6 @@ public class MainLevel extends Level
 		for(StandardMesh m : meshes)
 			m.update();
 		
-		testBoxes.update();
 		pool.update();
 		
 		//input junk and shit idk
@@ -168,7 +163,7 @@ public class MainLevel extends Level
 	{
 		StandardMesh whiteLight = new StandardMesh();
 		whiteLight.setMaterial("lightMaterial");
-		whiteLight.addVertices(OBJLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		whiteLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
 		whiteLight.formMesh();
 		whiteLight.setScale(.5f);
 		Vector3f whitePos = new Vector3f(2f, 22f, 30f);
@@ -179,7 +174,7 @@ public class MainLevel extends Level
 		
 		StandardMesh blueLight = new StandardMesh();
 		blueLight.setMaterial("lightMaterial");
-		blueLight.addVertices(OBJLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		blueLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
 		blueLight.formMesh();
 		blueLight.setScale(.5f);
 		Vector3f bluePos = new Vector3f(15f, 12f, -30f);
@@ -190,7 +185,7 @@ public class MainLevel extends Level
 		
 		StandardMesh greenLight = new StandardMesh();
 		greenLight.setMaterial("lightMaterial");
-		greenLight.addVertices(OBJLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		greenLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
 		greenLight.formMesh();
 		greenLight.setScale(.5f);
 		Vector3f greenPos = new Vector3f(40f, 26f, 10f);
@@ -201,7 +196,7 @@ public class MainLevel extends Level
 		
 		StandardMesh pinkLight = new StandardMesh();
 		pinkLight.setMaterial("lightMaterial");
-		pinkLight.addVertices(OBJLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		pinkLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
 		pinkLight.formMesh();
 		pinkLight.setScale(.5f);
 		Vector3f pinkPos = new Vector3f(-30f, 26f, 12f);
@@ -215,17 +210,17 @@ public class MainLevel extends Level
 	{
 		StandardMesh light = new StandardMesh();
 		light.setMaterial("lightMaterial");
-		light.addVertices(OBJLoader.loadOBJ("/res/OBJ/light.obj"));
+		light.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
 		light.formMesh();
 		light.setScale(.5f);
 		Vector3f lightPos = new Vector3f(Camera.getPos());
 			
 		light.setTranslation(lightPos);
 		lights.addLight(new PointLight(lightPos, new Vector3f(0f, (0f/2), (1f/1)), new Vector3f((float) Math.random(), (float) Math.random(), (float) Math.random()), 50f));
-		testBoxes.addMesh(light);
+		//testBoxes.addMesh(light);
 	}
 	
-	private void addTestBlock(SceneryHandler p)
+	private void addTestBlock(SceneryPool p)
 	{
 		StandardMesh light = new StandardMesh();
 		light.setMaterial("lightMaterial");

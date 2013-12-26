@@ -1,4 +1,4 @@
-package engine.renderer;
+package engine.shaders;
 
 import static org.lwjgl.opengl.GL20.*;
 
@@ -8,7 +8,7 @@ import engine.main.Main;
 import engine.math.Matrix4f;
 import engine.math.Vector3f;
 import engine.util.LogHelper;
-import engine.util.Profile;
+import engine.util.ProfilerHelper;
 
 public class ShaderBase
 {

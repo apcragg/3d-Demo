@@ -2,7 +2,7 @@ package engine.main;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.*;
-import engine.renderer.RenderUtil;
+import engine.renderer.RenderHelper;
 
 public class Window
 {
@@ -18,7 +18,7 @@ public class Window
 		Window.title = "Clean Project";
 		
 		createDisplay();
-		new RenderUtil();
+		new RenderHelper();
 		
 	}
 	

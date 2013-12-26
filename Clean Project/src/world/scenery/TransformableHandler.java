@@ -5,11 +5,11 @@ import java.util.HashMap;
 
 import engine.polygons.StandardMesh;
 
-public class ObjectHandler
+public class TransformableHandler
 {
 	private HashMap<String, ArrayList<StandardMesh>> materialBuckets;
 
-	public ObjectHandler()
+	public TransformableHandler()
 	{
 		materialBuckets = new HashMap<String, ArrayList<StandardMesh>>();
 	}

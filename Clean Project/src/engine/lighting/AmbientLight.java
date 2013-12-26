@@ -2,6 +2,7 @@ package engine.lighting;
 
 import engine.main.Game;
 import engine.math.Vector3f;
+import engine.util.LogHelper;
 
 public class AmbientLight implements Light
 {
@@ -42,5 +43,15 @@ public class AmbientLight implements Light
 
 	public void setIntensity(float intensity) {
 		this.intensity = intensity;
+	}
+
+	public void render() 
+	{
+		
+	}
+
+	public void setup() 
+	{
+		
 	}
 }

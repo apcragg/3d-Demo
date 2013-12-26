@@ -3,7 +3,7 @@ package engine.lighting;
 import engine.main.Game;
 import engine.math.Vector3f;
 import engine.renderer.Camera;
-import engine.renderer.PhongShader;
+import engine.shaders.PhongShader;
 
 public class PointLight implements Light
 {
@@ -48,6 +48,16 @@ public class PointLight implements Light
 		}
 	}
 
+	public void render() 
+	{
+		
+	}
+
+	public void setup() 
+	{
+		
+	}
+	
 	public Vector3f getPos() {
 		return pos;
 	}

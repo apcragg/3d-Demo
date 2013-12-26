@@ -2,7 +2,7 @@ package engine.util;
 
 import engine.main.Time;
 
-public class Profile
+public class ProfilerHelper
 	{
 		private static long start;
 		private static float average;
@@ -31,7 +31,7 @@ public class Profile
 
 		public static void setAverage(float average)
 		{
-				Profile.average += average;
+				ProfilerHelper.average += average;
 				num++;
 		}
 	}

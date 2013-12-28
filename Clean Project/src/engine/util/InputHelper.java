@@ -32,6 +32,12 @@ public  class InputHelper
 		{
 			keysReleased.put(i, false);
 		}
+		
+
+		for(int i = 0x01; i <= 0xDB; i++)
+		{
+			keysPressed.put(i, false);
+		}
 	}
 	
 	public static void update()

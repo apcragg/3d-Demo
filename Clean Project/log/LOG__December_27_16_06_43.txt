@@ -1,0 +1,15 @@
+[STDOUT] C:\Users\Andrew\git\3d-Demo\Clean Project/res/shaders/VertexShader.vs
+[STDOUT] C:\Users\Andrew\git\3d-Demo\Clean Project/res/shaders/FragmentShader.fs
+[STDERR] Could not create uniform displacementTex
+[STDERR] Could not create uniform tex3
+[STDOUT] default added as a new material.
+[STDOUT] groundMtl added as a new material.
+[STDOUT] Loaded new Material: groundMtl
+[STDOUT] sphere added as a new material.
+[STDOUT] Loaded new Material: sphere
+[STDOUT] Normal Texture loaded from: sphere.png
+[STDOUT] testMaterial added as a new material.
+[STDOUT] lightMaterial added as a new material.
+[STDOUT] wood added as a new material.
+[STDOUT] stone added as a new material.
+[STDOUT] Quiting...

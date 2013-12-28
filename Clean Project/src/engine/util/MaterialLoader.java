@@ -58,12 +58,16 @@ public class MaterialLoader
 					material.setTexture(1, new Texture(t_path + t_extension).getTexture().getTextureID());
 				}
 				
+				//loads the specular color
+				
 				if(RegexHelper.find("kS", line))
 				{
 					Matcher m = RegexHelper.getRegex("(d+\\.d+)\\s(d+\\.d+)\\s(d+\\.d+)", line);
 					
 					material.setSpecularColor(new Vector3f(Float.parseFloat(m.group(1)), Float.parseFloat(m.group(2)), Float.parseFloat(m.group(3))));
 				}
+				
+				//loads the specular intensity
 				
 				if(RegexHelper.find("nS", line))
 				{

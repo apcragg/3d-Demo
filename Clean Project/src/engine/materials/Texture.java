@@ -14,6 +14,12 @@ public class Texture
 	private String filePath;
 	private org.newdawn.slick.opengl.Texture texture;
 	
+	/**
+	 * Creates and loads a new texture from file using slick util. Must provide the file name and path
+	 * from the main project directory - ie. "/res/textures/foo.png"
+	 * @param filePath The file path pointing to the texture from the main project directory.
+	 */
+	
 	public Texture(String filePath)
 	{
 		this.filePath = System.getProperty("user.dir") + "/res/textures/" + filePath;
@@ -41,12 +47,27 @@ public class Texture
 		}
 	}
 	
+	/**
+	 * Gets the SlickUtil-loaded texture object.
+	 * @return Texture object loaded by slick util
+	 */
+	
 	public org.newdawn.slick.opengl.Texture getTexture()
 	{
 		if(texture.getTextureID() < 0)
 			LogHelper.printError("Failed to load texture.");
 		
 		return texture;
+	}
+	
+	/**
+	 * Gets the OpenGl-usable texture id
+	 * @return The OpenGL int texture id
+	 */
+	
+	public int getTextureID()
+	{
+		return this.texture.getTextureID();
 	}
 
 }

@@ -1,5 +1,6 @@
 package engine.shaders;
 
+import engine.main.Game;
 import engine.util.ShaderLoader;
 import static org.lwjgl.opengl.GL20.*;
 
@@ -65,16 +66,18 @@ public class PhongShader extends ShaderBase
 			createUniform("specExp");
 			createUniform("specColor");
 			createUniform("textureScale");
-			createUniform("normalMap");
+			
+			createUniform("normalMap");		
+			createUniform("displacementMapping");	
 			
 			createUniform("tex0");
-			createUniform("tex1");
-			createUniform("tex2");
+			createUniform("normalTex");
+			createUniform("displacementTex");
 			createUniform("tex3");
 			
 			uniformData1i("tex0", 0);
-			uniformData1i("tex1", 1);
-			uniformData1i("tex2", 2);
+			uniformData1i("normalTex", 1);
+			uniformData1i("displacementTex", 2);
 			uniformData1i("tex3", 3);
 	}
 

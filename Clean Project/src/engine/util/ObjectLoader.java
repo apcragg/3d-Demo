@@ -28,20 +28,25 @@ public class ObjectLoader
 		boolean uv = false;
 		boolean normal = false;
 		
+		//ro
 		Matrix4f fixMatrix = new Matrix4f().arbitraryAxisRotate(new Vector3f(1f, 0f, 0f), 270);
 		
 		try
 		{
 			file = new Scanner(new FileReader(new File(System.getProperty("user.dir") + path)));
 			
+			//read the file until it's finsihed
 			while(file.hasNext())
 			{
 				String line = file.nextLine() + '\n';
 				
+				//ignore comments and empty lines
 				if(line.startsWith("#"))
 					continue;			
 				if(line.length() == 0)
 					continue;
+				
+				//loads vertex positions
 				if(line.startsWith("v"))
 				{			
 					Pattern regex = Pattern.compile("(-?\\d+\\.\\d+)");
@@ -57,6 +62,7 @@ public class ObjectLoader
 					positions.add(fixMatrix.mul(v));
 				}
 				
+				//loads texture coords
 				if(line.startsWith("vt"))
 				{
 					uv = true;
@@ -74,6 +80,7 @@ public class ObjectLoader
 					uvs.add(v);				
 				}
 				
+				//loads normals
 				if(line.startsWith("vn"))
 				{
 					normal = true;
@@ -122,6 +129,13 @@ public class ObjectLoader
 							faceVertices.add(new Vertex(positions.get(faces[mul*j] - 1), uvs.get(faces[j*mul+1] - 1), normals.get(faces[j*mul+2] - 1)));
 					}
 					
+				}
+				
+				if(line.startsWith("mtlib"))
+				{
+					Matcher match = RegexHelper.getRegex("mtlib (.*)", line);
+					
+					MaterialLoader.loadMaterial(match.group(1));
 				}
 				
 			}

@@ -85,6 +85,20 @@ public class Material
 				{
 					Game.shader.uniformData1i("normalMap", 1);
 				}
+				
+				if(activatedTextures[i] && i == 2)
+				{
+					if(!activatedTextures[1])
+						LogHelper.printError("Warning: Displacement map usage without a normal map will result in incorrect normals.");
+					
+					Game.shader.uniformData1i("displacementMapping", 1);					
+				}
+
+			}
+			
+			if(!activatedTextures[2])
+			{
+				Game.shader.uniformData1i("displacementMapping", 0);
 			}
 			
 			if(!activatedTextures[1])

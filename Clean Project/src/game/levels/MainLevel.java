@@ -21,6 +21,7 @@ import engine.math.Vector3f;
 import engine.polygons.StandardMesh;
 import engine.polygons.Vertex;
 import engine.renderer.Camera;
+import engine.renderer.RenderHelper;
 import engine.shaders.PhongShader;
 import engine.util.InputHelper;
 import engine.util.MaterialLoader;
@@ -48,6 +49,7 @@ public class MainLevel extends Level
 		basicModel	= ObjectLoader.loadOBJ("/res/OBJ/light.obj");
 		
 		new Camera();
+		RenderHelper.setBackfaceCulling(false);
 		
 		lights.addLight(new AmbientLight(.001f, new Vector3f(1f, 1f, 1f)));
 		//lights.addLight(new DirectionalLight(.7f, new Vector3f(1f, 1f, 1f), new Vector3f(0.5f, -.5f, .3f)));
@@ -60,6 +62,10 @@ public class MainLevel extends Level
 		
 		MaterialLoader.loadMaterial("/res/mtl/ground.mtl");
 		MaterialLoader.loadMaterial("/res/mtl/sphere.mtl");
+		
+		Material.getMaterial("groundMtl").setTexture(2, new Texture("rockMap.png").getTexture().getTextureID());
+		Material.getMaterial("groundMtl").setTexture(1, new Texture("rockNormalMap.png").getTexture().getTextureID());
+		Material.getMaterial("groundMtl").setTexture(0, new Texture("ground.png").getTexture().getTextureID());
 		
 		StandardMesh teapot = new StandardMesh();
 		teapot.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
@@ -98,14 +104,14 @@ public class MainLevel extends Level
 		stone.setSpecIntensity(2f);
 		stone.setSpecularExponenet(128);
 		
-		StandardMesh house = new StandardMesh();
-		house.addVertices(ObjectLoader.loadOBJ("/res/OBJ/ground.obj"));
-		house.setMaterial("GroundMtl");
-		house.setTranslation(new Vector3f(120f, 0f, 120f));
-		house.setTextureScale(1f);
-		house.formMesh();
-		house.setScale(.25f);
-		meshes.add(house);
+		StandardMesh ground = new StandardMesh();
+		ground.addVertices(ObjectLoader.loadOBJ("/res/OBJ/dispGround.obj"));
+		ground.setMaterial("groundMtl");
+		ground.setTranslation(new Vector3f(35f, 7f, 35f));
+		ground.setTextureScale(1f);
+		ground.formMesh();
+		ground.setScale(.25f);
+		meshes.add(ground);
 		
 		pool = new SceneryPool();
 		

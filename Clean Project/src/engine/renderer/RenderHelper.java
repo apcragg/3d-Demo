@@ -28,4 +28,12 @@ public class RenderHelper
 		glClearColor(1f, 1f, 1f, 1f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
+	
+	public static void setBackfaceCulling(boolean b)
+	{
+		if(b)
+			glEnable(GL_CULL_FACE);
+		else
+			glDisable(GL_CULL_FACE);
+	}
 }

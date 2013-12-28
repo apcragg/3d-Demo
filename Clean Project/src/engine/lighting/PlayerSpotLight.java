@@ -10,29 +10,25 @@ import engine.util.InputHelper;
 
 public class PlayerSpotLight extends SpotLight
 {
+	private boolean isOn;
+	
 	public PlayerSpotLight(Vector3f pos, Vector3f color, Vector3f direction, float angle, float intensity) 
 	{
 		super(pos, color, direction, angle, intensity);
+		
+		isOn = true;
 	}
 
 	@Override
 	public void update()
 	{
-		if(updateCounter < PhongShader.MAX_SPOT_LIGHTS)
+		input();
+		
+		if(updateCounter < PhongShader.MAX_SPOT_LIGHTS && isOn)
 		{					
 			pos = Camera.getPos(); //.add(Camera.getUp().mul(10f));
 			direction = Camera.getForward();
-			
-			if(InputHelper.isKeyDown(Keyboard.KEY_E))
-			{
-				rotation -= .25f;			
-			}
-			
-			if(InputHelper.isKeyDown(Keyboard.KEY_Q))
-			{
-				rotation += .25f;			
-			}
-			
+					
 			direction = direction.rotate(rotation, Camera.getForward().cross(Camera.getUp()));
 			
 			Game.shader.uniformData1f("spotLights[" + updateCounter + "].angle", angle);
@@ -43,5 +39,28 @@ public class PlayerSpotLight extends SpotLight
 			
 			updateCounter++;
 		}
+		else
+		{
+			Game.shader.uniformData1f("spotLights[" + updateCounter + "].base.intensity", 0f);
+			
+			updateCounter++;
+		}
+		
+	}
+	
+	public void input()
+	{
+		if(InputHelper.isKeyDown(Keyboard.KEY_E)){	rotation -= 1.0f;	}		
+		if(InputHelper.isKeyDown(Keyboard.KEY_Q)){	rotation += 1.0f;	}		
+		
+		if(InputHelper.isKeyPressed(Keyboard.KEY_C)){	isOn = isOn ? false : true;	}		
+	}
+
+	public boolean isOn() {
+		return isOn;
+	}
+
+	public void setOn(boolean isOn) {
+		this.isOn = isOn;
 	}
 }

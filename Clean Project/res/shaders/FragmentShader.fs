@@ -49,8 +49,7 @@ uniform int slNum;
 
 //textures
 uniform sampler2D tex0;
-uniform sampler2D tex1;
-uniform sampler2D tex2;
+uniform sampler2D normalTex;
 uniform sampler2D tex3;
 uniform float textureScale;
 
@@ -184,7 +183,7 @@ void calculateNormals()
 {
 	if(normalMap == 1)
 	{
-		normal = tbnMatrix * (2f * texture2D(tex1, uvCoords).xyz - 1f);
+		normal = tbnMatrix * (2f * texture2D(normalTex, uvCoords).xyz - 1f);
 	}
 }
 

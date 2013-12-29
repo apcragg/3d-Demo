@@ -18,11 +18,12 @@ public class Material
 	private String name;	// The unique id of the material.
 	
 	private Vector3f specularColor;
-	private float specIntensity;
+	private float specIntensity, displacementFactor;
 	private int specularExponenet;
 	
 	private int[] textures;
 	private boolean[] activatedTextures;
+	private boolean parallaxMapping, displacementMapping;
 	
 	/**
 	 * Creates a new material with the passed in name id. If there already exists a material by that name it returns,
@@ -40,6 +41,9 @@ public class Material
 			specularColor = new Vector3f(1f, 1f, 1f);
 			setSpecularExponenet(64);
 			setSpecIntensity(1.0f);
+			setDisplacementFactor(1f);
+			setParallaxMapping(false);
+			setDisplacementMapping(false);
 			
 			activatedTextures = new boolean[4];
 			
@@ -70,51 +74,62 @@ public class Material
 		{
 			lastUpdated = this.name;
 			
-			/*
-			 * Texture updating
-			 */
+			//Texture updating			
+			updateTextures();			
 			
-			for(int i = 0; i < 4; i++)
-			{
-				if(activatedTextures[i])
-				{			
-					glActiveTexture(GL_TEXTURE0 + i);
-					glBindTexture(GL_TEXTURE_2D, textures[i]);
-				}
-				if(activatedTextures[i] && i == 1)
-				{
-					Game.shader.uniformData1i("normalMap", 1);
-				}
-				
-				if(activatedTextures[i] && i == 2)
-				{
-					if(!activatedTextures[1])
-						LogHelper.printError("Warning: Displacement map usage without a normal map will result in incorrect normals.");
-					
-					Game.shader.uniformData1i("displacementMapping", 1);					
-				}
-
-			}
-			
-			if(!activatedTextures[2])
-			{
-				Game.shader.uniformData1i("displacementMapping", 0);
-			}
-			
-			if(!activatedTextures[1])
-			{
-				Game.shader.uniformData1i("normalMap", 0);
-			}
-			
-			/*
-			 * Uniform updating
-			 */
-			
+			//Uniform updating			
 			Game.shader.uniformData3f("specColor", specularColor);
 			Game.shader.uniformData1i("specExp", specularExponenet);
-			Game.shader.uniformData1f("specIntensity", specIntensity);
+			Game.shader.uniformData1f("specIntensity", specIntensity);		
+		}
+	}
+	
+	private void updateTextures()
+	{
+		for(int i = 0; i < 4; i++)
+		{
+			if(activatedTextures[i])
+			{			
+				glActiveTexture(GL_TEXTURE0 + i);
+				glBindTexture(GL_TEXTURE_2D, textures[i]);
+			}
+			if(activatedTextures[i] && i == 1)
+			{
+				Game.shader.uniformData1i("normalMap", 1);
+			}
 			
-			
+			if(activatedTextures[i] && i == 2 && displacementMapping)
+			{
+				if(!activatedTextures[1])
+					LogHelper.printError("Warning: Displacement map usage without a normal map will result in incorrect normals.");
+				
+				Game.shader.uniformData1i("displacementMapping", 1);				
+				Game.shader.uniformData1f("displacementFactor", getDisplacementFactor());	
+			}
+
+		}
+		
+		if(!activatedTextures[2])
+		{
+			Game.shader.uniformData1i("displacementMapping", 0);
+		}
+		
+		if(!activatedTextures[1])
+		{
+			Game.shader.uniformData1i("normalMap", 0);
+		}
+		
+		if(parallaxMapping && activatedTextures[2])
+		{
+			Game.shader.uniformData1i("parallaxMapping", 1);
+		}
+		else if(parallaxMapping)
+		{
+			LogHelper.printError("Material Error in: " + name + ". Cannot use parallax mapping without a heightmap.");
+		}
+		else
+		{
+			Game.shader.uniformData1i("parallaxMapping", 0);
 		}
 	}
 	
@@ -166,8 +181,32 @@ public class Material
 		return specIntensity;
 	}
 
+	public float getDisplacementFactor() {
+		return displacementFactor;
+	}
+
+	public void setDisplacementFactor(float displacementFactor) {
+		this.displacementFactor = displacementFactor;
+	}
+
 	public void setSpecIntensity(float specIntensity) {
 		this.specIntensity = specIntensity;
+	}
+
+	public boolean isParallaxMapping() {
+		return parallaxMapping;
+	}
+
+	public void setParallaxMapping(boolean parallaxMapping) {
+		this.parallaxMapping = parallaxMapping;
+	}
+
+	public boolean isDisplacementMapping() {
+		return displacementMapping;
+	}
+
+	public void setDisplacementMapping(boolean displacementMapping) {
+		this.displacementMapping = displacementMapping;
 	}
 
 }

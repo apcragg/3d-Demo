@@ -131,6 +131,7 @@ public class ObjectLoader
 					
 				}
 				
+				//loads the material file which should be located in /res/mtl
 				if(line.startsWith("mtlib"))
 				{
 					Matcher match = RegexHelper.getRegex("mtlib (.*)", line);
@@ -155,6 +156,8 @@ public class ObjectLoader
 		return faceVertices;
 	}
 	
+	
+	//why the hell did i put this method in this class? java, why can't you be like c++ and let me have global functions or at least class independent ones
 	public static String[] removeEmptyStrings(String[] data)
 	{
 		ArrayList<String> result = new ArrayList<String>();

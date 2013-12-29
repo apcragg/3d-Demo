@@ -12,6 +12,7 @@ uniform int displacementMapping;
 
 uniform sampler2D displacementTex;
 uniform float displacementFactor;
+uniform vec3 cameraPos;
 
 vec3 temp_World_pos;
 
@@ -19,6 +20,8 @@ out vec3 world_pos;
 out vec3 object_normal;
 out vec2 object_uvs;
 out mat3 tbnMatrix;
+out vec3 camera_Pos;
+out vec3 camera_Vec;
 
 //Benny's code. See engine.main.OBJLoader in the calculateTangnet() method for his github link.
 mat3  calculateTBN()
@@ -46,7 +49,7 @@ vec3 calculateDisplacement()
 	
 	float dFactor = 0.30*dv.x + 0.59*dv.y + 0.11*dv.z;
 		
-	tempPos = position + (normalize(normal) * dFactor *  15f); // * displacementFactor;
+	tempPos = position + (normalize(normal) * dFactor * displacementFactor); // * displacementFactor;
 	
 	if(displacementMapping != 1)
 	{
@@ -67,4 +70,7 @@ void main()
 	gl_Position =  (projectedSpace * viewSpace * vec4(world_pos, 1f));
 	
 	tbnMatrix = calculateTBN();
+	
+	camera_Pos = cameraPos;
+	camera_Vec = tbnMatrix * (cameraPos - position);
 }

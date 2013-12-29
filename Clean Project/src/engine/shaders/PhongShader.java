@@ -69,15 +69,19 @@ public class PhongShader extends ShaderBase
 			
 			createUniform("normalMap");		
 			createUniform("displacementMapping");	
+			createUniform("parallaxMapping");
+			createUniform("displacementFactor");		
 			
 			createUniform("tex0");
 			createUniform("normalTex");
 			createUniform("displacementTex");
 			createUniform("tex3");
+			createUniform("parallaxTex");
 			
 			uniformData1i("tex0", 0);
 			uniformData1i("normalTex", 1);
 			uniformData1i("displacementTex", 2);
+			uniformData1i("parallaxTex", 2);
 			uniformData1i("tex3", 3);
 	}
 

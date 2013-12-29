@@ -63,9 +63,18 @@ public class MainLevel extends Level
 		MaterialLoader.loadMaterial("/res/mtl/ground.mtl");
 		MaterialLoader.loadMaterial("/res/mtl/sphere.mtl");
 		
-		Material.getMaterial("groundMtl").setTexture(2, new Texture("rockMap.png").getTexture().getTextureID());
+		Material.getMaterial("groundMtl").setTexture(2, new Texture("rockHeight.png").getTexture().getTextureID());
 		Material.getMaterial("groundMtl").setTexture(1, new Texture("rockNormalMap.png").getTexture().getTextureID());
-		Material.getMaterial("groundMtl").setTexture(0, new Texture("ground.png").getTexture().getTextureID());
+		Material.getMaterial("groundMtl").setTexture(0, new Texture("rockColor.png").getTexture().getTextureID());
+		Material.getMaterial("groundMtl").setDisplacementFactor(5f);
+		Material.getMaterial("groundMtl").setParallaxMapping(true);
+		
+		Material metal = new Material("metalMtl");
+		metal.setTexture(0, new Texture("brickColor.jpg").getTextureID());
+		metal.setTexture(1, new Texture("brickNormal.jpg").getTextureID());
+		metal.setTexture(2, new Texture("brickHeight.jpg").getTextureID());
+		metal.setParallaxMapping(true);
+		metal.setDisplacementFactor(.025f);
 		
 		StandardMesh teapot = new StandardMesh();
 		teapot.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
@@ -112,6 +121,15 @@ public class MainLevel extends Level
 		ground.formMesh();
 		ground.setScale(.25f);
 		meshes.add(ground);
+		
+		StandardMesh metalObject = new StandardMesh();
+		metalObject.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		metalObject.setMaterial("metalMtl");
+		metalObject.setTranslation(new Vector3f(-35f, 15f, -35f));
+		metalObject.setTextureScale(.35f);
+		metalObject.formMesh();
+		metalObject.setScale(2f);
+		meshes.add(metalObject);
 		
 		pool = new SceneryPool();
 		

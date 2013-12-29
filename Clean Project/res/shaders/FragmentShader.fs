@@ -51,7 +51,9 @@ uniform int slNum;
 uniform sampler2D tex0;
 uniform sampler2D normalTex;
 uniform sampler2D tex3;
+uniform sampler2D parallaxTex;
 uniform float textureScale;
+uniform int parallaxMapping;
 
 //materials
 uniform int normalMap;
@@ -60,7 +62,8 @@ uniform float specIntensity;
 uniform vec3 specColor;
 
 //Camera uniforms
-uniform vec3 cameraPos;
+in vec3 camera_Pos;
+in vec3 camera_Vec;
 
 vec2 uvCoords = object_uvs / textureScale;
 vec3 totalSpec = vec3(0f, 0f, 0f);
@@ -82,7 +85,7 @@ vec4 calculateSpecular(BaseLight base, vec3 direction)
 	
 	float cosAI = clamp(dot(normal, -direction), 0f, 1f);
 	
-	vec3 viewVector = normalize(cameraPos - world_pos);
+	vec3 viewVector = normalize(camera_Pos - world_pos);
 	vec3 halfAngle = normalize(viewVector - direction);
 	
 	//cosine of the angle between the half angle and normal. Is 1 if it is a perfect reflection.
@@ -168,7 +171,7 @@ vec4 spotLightLoop()
 
 vec4 calculateFog()
 {
-	float distance = length(cameraPos - world_pos);
+	float distance = length(camera_Pos - world_pos);
 	
 	if(distance > fogFalloff)
 	{
@@ -187,10 +190,24 @@ void calculateNormals()
 	}
 }
 
+void calculateParallax()
+{
+	if(parallaxMapping == 1)
+	{
+		float heightSample = texture2D(parallaxTex, uvCoords.xy).x;		
+		float hsb = .05f * heightSample - 0.03f;
+		
+		uvCoords = uvCoords + (normalize(camera_Pos - world_pos) * tbnMatrix).xy * hsb ;
+	}
+	
+	normalize(object_normal);
+}
+
 void main()
 {
 	//pre comp fixes
 	normal = normalize(object_normal);
+	calculateParallax();
 	calculateNormals();
 
 	//main lighting

@@ -1,5 +1,6 @@
 package world.scenery;
 
-public class SceneryHandler {
+public class SceneryHandler
+{
 
 }

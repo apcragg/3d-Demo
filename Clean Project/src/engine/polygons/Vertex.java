@@ -25,7 +25,7 @@ public class Vertex
 		this.v = uv.getY();
 		this.normal = new Vector3f();
 	}
-	
+
 	public Vertex(Vector3f v, Vector2f uv, Vector3f normal)
 	{
 		this.x = v.getX();
@@ -36,23 +36,23 @@ public class Vertex
 		this.normal = normal;
 		this.tangent = new Vector3f();
 	}
-	
+
 	public Vertex(Vector3f r, float u, float v, Vector3f normal)
 	{
 		this(r, new Vector2f(u, v), normal);
 	}
-	
+
 	public Vertex(Vector3f r, float u, float v, float x, float y, float z)
 	{
 		this(r, u, v, new Vector3f(x, y, z));
 	}
-	
-	public Vertex(float x, float y , float z, float u, float v, float nX, float nY, float nZ)
+
+	public Vertex(float x, float y, float z, float u, float v, float nX, float nY, float nZ)
 	{
-		this(new Vector3f(x,y,z), u, v, nX, nY, nZ);
+		this(new Vector3f(x, y, z), u, v, nX, nY, nZ);
 	}
 
-	public Vertex(Vector3f v, Vector3f n) 
+	public Vertex(Vector3f v, Vector3f n)
 	{
 		this(v, new Vector2f(0f, 0f), n);
 	}
@@ -89,7 +89,7 @@ public class Vertex
 
 	public Vector3f getPosition()
 	{
-		return new Vector3f(x,y,z);
+		return new Vector3f(x, y, z);
 	}
 
 	public float getU()
@@ -122,21 +122,22 @@ public class Vertex
 		this.normal = normal;
 	}
 
-	public void setPos(Vector3f m) 
+	public void setPos(Vector3f m)
 	{
 		this.x = m.getX();
 		this.y = m.getY();
 		this.z = m.getZ();
-		
+
 	}
 
-	public Vector3f getTangent() {
+	public Vector3f getTangent()
+	{
 		return tangent;
 	}
 
-	public void setTangent(Vector3f tangent) {
+	public void setTangent(Vector3f tangent)
+	{
 		this.tangent = tangent;
 	}
-	
 
 }

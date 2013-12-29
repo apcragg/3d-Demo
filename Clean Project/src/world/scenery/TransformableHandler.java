@@ -13,19 +13,19 @@ public class TransformableHandler
 	{
 		materialBuckets = new HashMap<String, ArrayList<StandardMesh>>();
 	}
-	
+
 	public boolean add(StandardMesh m)
 	{
-		if(materialBuckets.containsKey(m.getMaterial()))
+		if (materialBuckets.containsKey(m.getMaterial()))
 		{
 			materialBuckets.get(m.getMaterial()).add(m);
-			
+
 			return true;
 		}
 		else
-		{	
+		{
 			materialBuckets.put(m.getMaterial(), new ArrayList<StandardMesh>());
-			
+
 			return false;
 		}
 

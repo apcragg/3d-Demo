@@ -12,18 +12,19 @@ public class ShaderLoader
 	{
 		StringBuilder source = new StringBuilder();
 		Scanner file;
-		
+
 		try
 		{
-			file = new Scanner(new FileReader(System.getProperty("user.dir") + location));
-			
+			file = new Scanner(new FileReader(System.getProperty("user.dir")
+					+ location));
+
 			LogHelper.printInfo(System.getProperty("user.dir") + location);
-			
-			while(file.hasNext())
+
+			while (file.hasNext())
 			{
 				source.append(file.nextLine() + '\n');
 			}
-			
+
 			file.close();
 		}
 		catch (FileNotFoundException e)
@@ -31,7 +32,7 @@ public class ShaderLoader
 			System.out.println();
 			e.printStackTrace();
 		}
-		
+
 		return source.toString();
 	}
 

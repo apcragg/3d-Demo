@@ -16,7 +16,7 @@ public class Game
 	{
 		setup();
 	}
-	
+
 	public void setup()
 	{
 		new InputHelper();
@@ -24,22 +24,22 @@ public class Game
 		levels[0] = new MainLevel();
 		currentLevel = 0;
 	}
-	
+
 	public void update()
 	{
 		levels[currentLevel].update();
 	}
-	
+
 	public void render()
 	{
 		levels[currentLevel].render();
 	}
-	
+
 	public void quit()
 	{
-		//TODO: Quit behavior.
+		// TODO: Quit behavior.
 		LogHelper.printInfo("Quiting...");
-		
+
 		LogHelper.dumpInfoLog(false);
 	}
 

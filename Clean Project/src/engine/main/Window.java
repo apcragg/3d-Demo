@@ -9,19 +9,19 @@ public class Window
 	public static int WIDTH, HEIGHT;
 	public static float ASPECT_RATIO;
 	public static String title;
-	
+
 	public Window(int width, float aspectRatio)
 	{
 		Window.ASPECT_RATIO = aspectRatio;
 		Window.WIDTH = width;
-		Window.HEIGHT =(int) (Window.ASPECT_RATIO * Window.WIDTH );
+		Window.HEIGHT = (int) (Window.ASPECT_RATIO * Window.WIDTH);
 		Window.title = "Clean Project";
-		
+
 		createDisplay();
 		new RenderHelper();
-		
+
 	}
-	
+
 	private void createDisplay()
 	{
 		try
@@ -29,7 +29,7 @@ public class Window
 			Display.setDisplayMode(new DisplayMode(HEIGHT, WIDTH));
 			Display.setTitle(Window.title);
 			Display.create();
-			//Display.setVSyncEnabled(true);
+			// Display.setVSyncEnabled(true);
 		}
 		catch (LWJGLException e)
 		{
@@ -41,7 +41,7 @@ public class Window
 	{
 		Display.destroy();
 	}
-	
+
 	public static void updateFPS(int fps)
 	{
 		Display.setTitle(Window.title + " FPS: " + fps);

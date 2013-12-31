@@ -7,6 +7,10 @@ public class Transform
 	private static Vector3f translation, rotation, scale;
 	private static float aspectRatio, depth;
 	private static int fov;
+	
+	public static Vector3f currentLight = new Vector3f();
+	public static Matrix4f lightOrthoMatrix = new Matrix4f().identity();
+	public static Matrix4f lightViewMatrix = new Matrix4f().identity();
 
 	public static void setupPerspective(float ar, int fov, float depth)
 	{
@@ -80,6 +84,29 @@ public class Transform
 		Matrix4f transform = new Matrix4f().translate(Camera.getPos().negated());
 
 		return rotation.mul(transform);
+	}
+	
+	public static Matrix4f orthographicSpace(float left, float right, float top, float bottom, float near, float far)
+	{
+		return new Matrix4f().initOrthographicProjection(left, right, top, bottom, near, far);
+	}
+	
+	public static Matrix4f lightViewSpace(Vector3f pos, Vector3f direction)
+	{
+		direction = direction.normalized();
+		
+		Vector3f left = Camera.yAxis.cross(direction).normalized();
+		Vector3f up = direction.cross(left).normalized();
+		
+		Matrix4f rotation = new Matrix4f().initCamera(direction.normalized(), up);
+		Matrix4f transform = new Matrix4f().translate(pos.negated());
+
+		return rotation.mul(transform);
+	}
+	
+	public static Matrix4f lightSpace()
+	{
+		return lightOrthoMatrix.mul(lightViewMatrix);
 	}
 
 }

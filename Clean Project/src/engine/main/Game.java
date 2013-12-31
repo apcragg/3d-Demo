@@ -2,13 +2,18 @@ package engine.main;
 
 import engine.levels.Level;
 import engine.shaders.PhongShader;
+import engine.shaders.QuadShader;
+import engine.shaders.ShadowShader;
 import engine.util.InputHelper;
 import engine.util.LogHelper;
 import game.levels.MainLevel;
+import game.levels.ShadowLevel;
 
 public class Game
 {
 	public static PhongShader shader;
+	public static ShadowShader shadowShader;
+	public static QuadShader quadShader;
 	private Level[] levels = new Level[5];
 	private static int currentLevel;
 
@@ -21,8 +26,11 @@ public class Game
 	{
 		new InputHelper();
 		shader = new PhongShader();
+		shadowShader = new ShadowShader();
+		quadShader = new QuadShader();
 		levels[0] = new MainLevel();
-		currentLevel = 0;
+		levels[1] = new ShadowLevel();
+		currentLevel = 1;
 	}
 
 	public void update()

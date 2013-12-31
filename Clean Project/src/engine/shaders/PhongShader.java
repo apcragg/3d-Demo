@@ -72,17 +72,17 @@ public class PhongShader extends ShaderBase
 		createUniform("parallaxMapping");
 		createUniform("displacementFactor");
 
-		createUniform("tex0");
+		createUniform("diffuseTex");
 		createUniform("normalTex");
 		createUniform("displacementTex");
-		createUniform("tex3");
 		createUniform("parallaxTex");
+		createUniform("shadowTex");
 
-		uniformData1i("tex0", 0);
+		uniformData1i("diffuseTex", 0);
 		uniformData1i("normalTex", 1);
 		uniformData1i("displacementTex", 2);
 		uniformData1i("parallaxTex", 2);
-		uniformData1i("tex3", 3);
+		uniformData1i("shadowTex", 3);
 	}
 
 	public static int getProgramHandle()

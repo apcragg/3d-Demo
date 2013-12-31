@@ -3,8 +3,18 @@ package engine.renderer;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL32.GL_DEPTH_CLAMP;
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL30;
+
+import engine.main.Game;
+import engine.math.Vector3f;
+import engine.polygons.StandardMesh;
+import engine.util.ObjectLoader;
+
 public class RenderHelper
 {
+	private static StandardMesh quad;
 
 	public RenderHelper()
 	{
@@ -20,6 +30,14 @@ public class RenderHelper
 		glEnable(GL_DEPTH_CLAMP);
 		glEnable(GL_CULL_FACE);
 		glFrontFace(GL_CW);
+		
+		quad = new StandardMesh();
+		quad.addVertices(ObjectLoader.loadOBJ("/res/OBJ/plane.obj"));
+		quad.setTranslation(new Vector3f(50f, 50f, 70f));
+		quad.setRotation(new Vector3f(90f, 0f, 0f));
+		quad.setScale(30f);
+		quad.setTextureScale(1f);
+		quad.formMesh();		
 	}
 
 	public static void clear()
@@ -33,5 +51,16 @@ public class RenderHelper
 	{
 		if (b) glEnable(GL_CULL_FACE);
 		else glDisable(GL_CULL_FACE);
+	}
+	
+	public static void renderQuad(int textureId)
+	{
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, textureId);		
+	
+		quad.quadRender();
+			
+		glBindTexture(GL_TEXTURE_2D, 0);
+		 
 	}
 }

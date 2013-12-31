@@ -4,18 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL14;
 
+import static org.lwjgl.opengl.GL11.*;
 import world.scenery.SceneryPool;
 import engine.levels.Level;
 import engine.lighting.AmbientLight;
 import engine.lighting.LightingHandler;
 import engine.lighting.PlayerSpotLight;
 import engine.lighting.PointLight;
+import engine.lighting.ShadowMapFBO;
+import engine.lighting.ShadowSpotLight;
 import engine.main.Game;
 import engine.main.Main;
 import engine.main.Window;
 import engine.materials.Material;
 import engine.materials.Texture;
+import engine.math.Matrix4f;
 import engine.math.Transform;
 import engine.math.Vector3f;
 import engine.polygons.StandardMesh;
@@ -31,6 +36,7 @@ public class MainLevel extends Level
 {
 	private LightingHandler lights;
 	private SceneryPool pool;
+	private ShadowMapFBO shadowMap;
 	private List<Vertex> basicModel;
 
 	private List<StandardMesh> meshes;
@@ -47,6 +53,8 @@ public class MainLevel extends Level
 		meshes = new ArrayList<StandardMesh>();
 
 		basicModel = ObjectLoader.loadOBJ("/res/OBJ/light.obj");
+		shadowMap = new ShadowMapFBO(1024, 1024);
+		shadowMap.writeUnBind();
 
 		new Camera();
 		RenderHelper.setBackfaceCulling(false);
@@ -54,6 +62,7 @@ public class MainLevel extends Level
 		lights.addLight(new AmbientLight(.001f, new Vector3f(1f, 1f, 1f)));
 		// lights.addLight(new DirectionalLight(.7f, new Vector3f(1f, 1f, 1f),
 		// new Vector3f(0.5f, -.5f, .3f)));
+		lights.addLight(new ShadowSpotLight(new Vector3f(75f, 50f, 3f), new Vector3f(1f, 0f, 0f), new Vector3f(-0.77229255f, -0.48175365f, -0.41409853f),  .55f, 40f)); //-0.77229255f, -0.48175365f, -0.41409853f
 		lights.addLight(new PlayerSpotLight(new Vector3f(), new Vector3f(1f, 1f, 1f), new Vector3f(0f, 0f, 1f), .7f, 10f));
 
 		defaultMaterial.setTexture(0, new Texture("test.png").getTexture().getTextureID());
@@ -78,11 +87,11 @@ public class MainLevel extends Level
 		metal.setDisplacementFactor(.025f);
 
 		StandardMesh teapot = new StandardMesh();
-		teapot.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
-		teapot.setScale(1f);
+		teapot.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		teapot.setScale(1.5f);
 		teapot.setTranslation(new Vector3f(0f, 15.725f, 0f)); // 5.725f
 		teapot.formMesh();
-		teapot.setMaterial("sphere");
+		teapot.setMaterial("lightMaterial");
 		meshes.add(teapot);
 
 		Material testMaterial = new Material("testMaterial");
@@ -91,7 +100,7 @@ public class MainLevel extends Level
 		testMaterial.setSpecIntensity(.7f);
 
 		Material lightMaterial = new Material("lightMaterial");
-		lightMaterial.setTexture(0, new Texture("blank.png").getTexture().getTextureID());
+		lightMaterial.setTexture(0, new Texture("test.png").getTextureID());
 		// lightMaterial.setTexture(1, new
 		// Texture("weirdNormal.jpg").getTexture().getTextureID());
 
@@ -101,6 +110,7 @@ public class MainLevel extends Level
 		floor.setTranslation(new Vector3f());
 		floor.setTextureScale(.25f);
 		floor.formMesh();
+		floor.setScale(new Vector3f(4f, 1f, 4f));
 		meshes.add(floor);
 
 		Material wood = new Material("wood");
@@ -146,17 +156,37 @@ public class MainLevel extends Level
 
 	public void render()
 	{
-		Game.shader.uniformData4f("viewSpace", Transform.viewSpace());
-		Game.shader.uniformData4f("projectedSpace", Transform.perspectiveMatrix());
-
-		pool.render();
-
-		for (StandardMesh m : meshes)
-		{
-			m.render();
-		}
+		shadowPass();
+		renderPass();	
+	}
+	
+	private void shadowPass()
+	{		
+		Game.shadowShader.use();
+		shadowMap.writeBind();
+		
+		//TODO: Shadow renderpass
+		
+		shadowMap.writeUnBind();
 	}
 
+	private void renderPass()
+	{
+		RenderHelper.clear();
+		
+		Game.shader.use();
+		Game.shader.uniformData4f("viewSpace", Transform.viewSpace());
+		Game.shader.uniformData4f("projectedSpace", Transform.perspectiveMatrix());
+		
+		Material.getMaterial("default").update();
+		shadowMap.readBind();
+		
+		pool.render();
+		for (StandardMesh m : meshes) m.render();	
+		
+		shadowMap.readUnBind();
+	}
+	
 	public void update()
 	{
 		// Light updating
@@ -193,13 +223,13 @@ public class MainLevel extends Level
 
 		StandardMesh blueLight = new StandardMesh();
 		blueLight.setMaterial("lightMaterial");
-		blueLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		blueLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/plane.obj"));
 		blueLight.formMesh();
-		blueLight.setScale(.5f);
-		Vector3f bluePos = new Vector3f(15f, 12f, -30f);
+		blueLight.setScale(20f);
+		Vector3f bluePos = new Vector3f(50f, 15f, -30f);
 
 		blueLight.setTranslation(bluePos);
-		lights.addLight(new PointLight(bluePos, new Vector3f(0f, (0f / 2), (1f / 1)), new Vector3f(.3f, .1f, 1f), 50f));
+		//lights.addLight(new PointLight(bluePos, new Vector3f(0f, (0f / 2), (1f / 1)), new Vector3f(.3f, .1f, 1f), 50f));
 		meshes.add(blueLight);
 
 		StandardMesh greenLight = new StandardMesh();

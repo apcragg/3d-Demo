@@ -2,6 +2,8 @@
 #define MAX_POINT_LIGHTS 64
 #define MAX_SPOT_LIGHTS 8
 
+layout(location = 0) out vec3 colorOUT;
+
 in vec3 world_pos;
 in vec3 object_normal;
 in vec2 object_uvs;
@@ -48,10 +50,10 @@ uniform int plNum;
 uniform int slNum;
 
 //textures
-uniform sampler2D tex0;
+uniform sampler2D diffuseTex;
 uniform sampler2D normalTex;
-uniform sampler2D tex3;
 uniform sampler2D parallaxTex;
+uniform sampler2D shadowTex;
 uniform float textureScale;
 uniform int parallaxMapping;
 
@@ -63,7 +65,6 @@ uniform vec3 specColor;
 
 //Camera uniforms
 in vec3 camera_Pos;
-in vec3 camera_Vec;
 
 vec2 uvCoords = object_uvs / textureScale;
 vec3 totalSpec = vec3(0f, 0f, 0f);
@@ -71,11 +72,11 @@ vec3 normal;
 float attenuation = 1f;
 float fogFalloff = 150f;
 
-out vec4 color;
+vec4 color;
 
 vec4 textureColor()
 {
-    return texture2D(tex0, uvCoords);
+    return texture2D(diffuseTex, uvCoords);
 }
 
 vec4 calculateSpecular(BaseLight base, vec3 direction)
@@ -198,8 +199,7 @@ void calculateParallax()
 		float hsb = .05f * heightSample - 0.03f;
 		
 		uvCoords = uvCoords + (normalize(camera_Pos - world_pos) * tbnMatrix).xy * hsb ;
-	}
-	
+	}	
 	normalize(object_normal);
 }
 
@@ -218,11 +218,18 @@ void main()
 	vec4 fogColor 			= calculateFog();
 	
 	//final color addition
- 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + fogColor + spotLightColor;
+ 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor;
 	
 	//gamma
 	color.x = pow(color.x, 1f/1.8f);
 	color.y = pow(color.y, 1f/1.8f);
 	color.z = pow(color.z, 1f/1.8f);
+	
+	colorOUT = color.xyz;
+	
+	float depth = gl_FragCoord.z;
+	depth = 1.0f - (1.0f - depth) * 1000f;
+	
+	//color = color * .00001f + vec4(vec3(depth), 1f);
 }
 

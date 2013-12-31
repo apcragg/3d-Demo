@@ -151,8 +151,6 @@ public class ObjectLoader
 			e.printStackTrace();
 		}
 
-		System.out.println("Object Vertez Count: " + faceVertices.size());
-
 		calculateTangents(faceVertices);
 
 		return faceVertices;

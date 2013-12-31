@@ -43,6 +43,35 @@ public class StandardMesh implements Mesh
 	public void render()
 	{
 		updateUniforms();
+		updateTransforms();
+
+		glEnableClientState(GL_VERTEX_ARRAY);
+		glBindVertexArray(abo);
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+		glDrawElements(GL_TRIANGLES, vertices.size() * 3, GL_UNSIGNED_INT, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(3);
+		glBindVertexArray(0);
+	}
+	
+	public void quadRender()
+	{
+
+		updateTransforms();
+
+		Game.shader.uniformData4f("worldSpace", Transform.spatialMatrix());
+		Game.shader.uniformData1f("textureScale", textureScale);
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glBindVertexArray(abo);

@@ -13,7 +13,7 @@ import engine.util.ProfilerHelper;
 public class ShaderBase
 {
 	protected int programId;
-	protected HashMap<String, Integer> uniformLocations = new HashMap<String, Integer>();
+	protected HashMap<String, Integer> uniformLocations;
 
 	public ShaderBase()
 	{
@@ -24,6 +24,8 @@ public class ShaderBase
 			LogHelper.printError("Could not create shader program.");
 			Main.quit();
 		}
+		
+		uniformLocations = new HashMap<String, Integer>();
 	}
 
 	public void addShader(String source, int type)

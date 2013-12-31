@@ -13,7 +13,7 @@ import engine.util.LogHelper;
 public class Camera
 {
 	private final static float moveAmount = 1.4f;
-	private static final Vector3f yAxis = new Vector3f(0f, 1f, 0f);
+	public static final Vector3f yAxis = new Vector3f(0f, 1f, 0f);
 	private static Vector3f forward;
 	private static Vector3f up;
 	private static Vector3f pos;
@@ -134,5 +134,15 @@ public class Camera
 	public static Vector3f getUp()
 	{
 		return up;
+	}
+	
+	public static void setForward(Vector3f forward)
+	{
+		Camera.forward = forward;
+	}
+
+	public static void setUp(Vector3f up)
+	{
+		Camera.up = up;
 	}
 }

@@ -83,8 +83,6 @@ public class SceneryPool
 
 		glBindVertexArray(abo);
 
-		System.out.println(size * 3 * 4);
-
 		buffers = new FloatBuffer[] {
 				engine.util.BufferHelper.createVertexFloatArray(vertices),
 				engine.util.BufferHelper.createVertexUVFloatArray(vertices),
@@ -131,8 +129,6 @@ public class SceneryPool
 		}
 
 		ibo = glGenBuffers();
-
-		System.out.println("IBO: " + ibo);
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, engine.util.BufferHelper.createIntBuffer(ints), GL_STATIC_DRAW);

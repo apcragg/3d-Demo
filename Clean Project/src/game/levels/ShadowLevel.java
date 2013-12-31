@@ -46,15 +46,16 @@ public class ShadowLevel extends Level
 	private void setup()
 	{
 		lights.addLight(new AmbientLight(.02f, Light.WHITE_LIGHT));
-		lights.addLight(new ShadowSpotLight(new Vector3f(-50f, 26f, 0f), new Vector3f(1f, 1f, 1f), new Vector3f(1f, -.5f, 0f), .4f, 5f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(-50f, 26f, 0f), new Vector3f(1f, 1f, 1f), new Vector3f(1f, -.5f, 0f), .4f, 50f));
 		
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
 		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/floor.obj"));
-		floor.setMaterial("lightMaterial");
+		floor.setMaterial("metalMtl");
 		floor.formMesh();
 		floor.setTranslation(new Vector3f());
 		floor.setScale(1f);
+		floor.setTextureScale(.2f);
 		meshes.add(floor);
 		
 		StandardMesh sphere = new StandardMesh();

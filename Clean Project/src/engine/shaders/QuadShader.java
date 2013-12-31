@@ -21,6 +21,10 @@ public class QuadShader extends ShaderBase
 	
 	private void setup()
 	{
+		createUniform("viewSpace");
+		createUniform("worldSpace");
+		createUniform("projectedSpace");
+		
 		createUniform("tex");		
 		uniformData1i("tex", 0);
 	}

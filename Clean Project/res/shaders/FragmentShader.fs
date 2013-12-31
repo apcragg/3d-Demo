@@ -206,6 +206,8 @@ void calculateParallax()
 void main()
 {
 	//pre comp fixes
+uvCoords.y = -uvCoords.y;
+	
 	normal = normalize(object_normal);
 	calculateParallax();
 	calculateNormals();

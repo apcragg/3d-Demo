@@ -73,9 +73,9 @@ public class ObjectLoader
 
 					for (int i = 0; i < 2 && match.find(); i++)
 					{
-						v.set(-Float.valueOf(match.group(0)), i);
+						v.set(Float.valueOf(match.group(0)), i);
 					}
-
+		
 					uvs.add(v);
 				}
 

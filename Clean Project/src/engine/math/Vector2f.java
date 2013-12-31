@@ -121,5 +121,10 @@ public class Vector2f
 		}
 
 	}
+	
+	public String toString()
+	{
+		return "X: " + x + " Y: " + y;
+	}
 
 }

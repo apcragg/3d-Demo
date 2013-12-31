@@ -94,7 +94,7 @@ public class Vertex
 
 	public float getU()
 	{
-		return -u;
+		return u;
 	}
 
 	public void setU(float u)

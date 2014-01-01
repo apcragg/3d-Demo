@@ -11,6 +11,6 @@ out vec2 uv;
 
 void main()
 {
-	gl_Position = projectedSpace * viewSpace * worldSpace * vec4(position, 1f);
+	gl_Position = (projectedSpace * (viewSpace * (worldSpace * vec4(position, 1f))));
 	uv = uvs;
 }

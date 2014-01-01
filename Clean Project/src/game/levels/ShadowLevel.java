@@ -38,7 +38,7 @@ public class ShadowLevel extends Level
 		meshes = new ArrayList<StandardMesh>();
 		
 		test = new Texture("test.png").getTextureID();
-		shadowMap = new ShadowMapFBO(1024, 1024);
+		shadowMap = new ShadowMapFBO(2048, 2048);
 		
 		setup();
 	}
@@ -80,8 +80,8 @@ public class ShadowLevel extends Level
 	{
 		shadowMap.writeBind();
 		
-		Game.shader.uniformData4f("viewSpace", Transform.lightSpace());
-		Game.shader.uniformData4f("projectedSpace", new Matrix4f());	
+		Game.setShader(Game.SHADOW);
+		Game.getShader().uniformData4f("lightSpace", Transform.lightSpace());
 		
 		for(StandardMesh m : meshes) m.render();
 		
@@ -94,8 +94,9 @@ public class ShadowLevel extends Level
 		RenderHelper.clear();
 		
 		//shader uniform updating
-		Game.shader.uniformData4f("viewSpace", Transform.viewSpace());
-		Game.shader.uniformData4f("projectedSpace", Transform.perspectiveMatrix());	
+		Game.setShader(Game.PHONG);
+		Game.getShader().uniformData4f("viewSpace", Transform.viewSpace());
+		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());	
 		
 		//shadow
 		shadowMap.readBind();

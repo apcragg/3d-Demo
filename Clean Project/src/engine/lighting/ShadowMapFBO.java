@@ -36,31 +36,34 @@ public class ShadowMapFBO
 
 	public void initializeFBO()
 	{
+		//creates and binds a new framebuffer
 		fbo = glGenFramebuffers();				
-		
-		d_texture = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D, d_texture);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1024, 1024, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		//creates the color texture and initializes its parameters
+		d_texture = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, d_texture);
+				
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		//glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
 		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 		
+		//creates the depth renderbuffer to allow for depth testing
 		int depthrenderbuffer;
 		depthrenderbuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1024, 1024);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);	
 		
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d_texture, 0);
-		
+		//binds the COLOR0 attachment to the draw framebuffer
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d_texture, 0);	
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);	
-		
-		int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-		
+				
+		//Checks for framebuffer completeness
+		int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);		
 		if(status != GL_FRAMEBUFFER_COMPLETE)
 		{
 			LogHelper.printError("Could not intialize framebuffer.");
@@ -71,10 +74,14 @@ public class ShadowMapFBO
 	
 	public void writeBind()
 	{
-		glViewport(0,0, 1024, 1024);
+		//binds the framebuffer for drawing
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-			GL20.glDrawBuffers(GL_COLOR_ATTACHMENT0);
+		
+		//sets the viewport to the bound texture size
+		glViewport(0,0, width, height);
+		
+		//clears the framebuffer from the previous draw
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 			
 	}
 	

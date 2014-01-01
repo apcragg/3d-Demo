@@ -23,9 +23,8 @@ public class ShadowShader extends ShaderBase
 		use();
 		
 		//transforms
-		createUniform("viewSpace");
+		createUniform("lightSpace");
 		createUniform("worldSpace");
-		createUniform("projectedSpace");
 
 	}
 

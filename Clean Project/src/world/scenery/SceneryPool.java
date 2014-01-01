@@ -55,7 +55,7 @@ public class SceneryPool
 		Transform.setRotation(new Vector3f());
 		Transform.setScale(1f);
 
-		Game.shader.uniformData4f("worldSpace", Transform.spatialMatrix());
+		Game.getShader().uniformData4f("worldSpace", Transform.spatialMatrix());
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glBindVertexArray(abo);

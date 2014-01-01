@@ -49,7 +49,7 @@ public class Camera
 
 	public static void update()
 	{
-		Game.shader.uniformData3f("cameraPos", pos);
+		Game.getShader().uniformData3f("cameraPos", pos);
 
 		updateMouse();
 	}

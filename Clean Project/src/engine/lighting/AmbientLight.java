@@ -17,8 +17,8 @@ public class AmbientLight implements Light
 
 	public void update()
 	{
-		Game.shader.uniformData3f("ambient.base.color", baseColor);
-		Game.shader.uniformData1f("ambient.base.intensity", intensity);
+		Game.getShader().uniformData3f("ambient.base.color", baseColor);
+		Game.getShader().uniformData1f("ambient.base.intensity", intensity);
 	}
 
 	public void render()

@@ -44,13 +44,13 @@ public class PointLight implements Light
 	{
 		if (updateCounter < PhongShader.MAX_POINT_LIGHTS)
 		{
-			Game.shader.uniformData1f("pointLights[" + updateCounter
+			Game.getShader().uniformData1f("pointLights[" + updateCounter
 					+ "].base.intensity", intensity);
-			Game.shader.uniformData3f("pointLights[" + updateCounter
+			Game.getShader().uniformData3f("pointLights[" + updateCounter
 					+ "].base.color", color);
-			Game.shader.uniformData3f("pointLights[" + updateCounter
+			Game.getShader().uniformData3f("pointLights[" + updateCounter
 					+ "].coefficient", coefficients);
-			Game.shader.uniformData3f("pointLights[" + updateCounter + "].pos", pos);
+			Game.getShader().uniformData3f("pointLights[" + updateCounter + "].pos", pos);
 
 			updateCounter++;
 		}

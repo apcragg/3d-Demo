@@ -43,7 +43,6 @@ public class StandardMesh implements Mesh
 	public void render()
 	{
 		updateUniforms();
-		updateTransforms();
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glBindVertexArray(abo);
@@ -64,33 +63,6 @@ public class StandardMesh implements Mesh
 		glDisableVertexAttribArray(3);
 		glBindVertexArray(0);
 	}
-	
-	public void quadRender()
-	{
-
-		updateTransforms();
-
-		Game.quadShader.uniformData4f("worldSpace", Transform.spatialMatrix());
-		//Game.shadowShader.uniformData1f("textureScale", textureScale);
-
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glBindVertexArray(abo);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		
-		for(Vertex v : vertices)
-			System.out.println(v.getU() + "  :  " + v.getV());
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-		glDrawElements(GL_TRIANGLES, vertices.size() * 3, GL_UNSIGNED_INT, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glBindVertexArray(0);
-	}
 
 	public void update()
 	{
@@ -106,12 +78,16 @@ public class StandardMesh implements Mesh
 
 	public void updateUniforms()
 	{
-		Material.getMaterial(material).update();
-
 		updateTransforms();
 
-		Game.shader.uniformData4f("worldSpace", Transform.spatialMatrix());
-		Game.shader.uniformData1f("textureScale", textureScale);
+		//shader specific uniforms
+		if(Game.currentShader == Game.PHONG)
+		{
+			Material.getMaterial(material).update();
+			Game.getShader().uniformData1f("textureScale", textureScale);
+		}	
+		
+		Game.getShader().uniformData4f("worldSpace", Transform.spatialMatrix());
 	}
 
 	public void addVertices(List<Vertex> v)

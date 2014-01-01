@@ -24,7 +24,7 @@ public class TransformComponent implements Component
 	{
 		updateTransforms();
 
-		Game.shader.uniformData4f("worldSpace", Transform.spatialMatrix());
+		Game.getShader().uniformData4f("worldSpace", Transform.spatialMatrix());
 	}
 
 	public void updateTransforms()

@@ -162,7 +162,7 @@ public class MainLevel extends Level
 	
 	private void shadowPass()
 	{		
-		Game.shadowShader.use();
+		Game.setShader(Game.SHADOW);
 		shadowMap.writeBind();
 		
 		//TODO: Shadow renderpass
@@ -174,9 +174,9 @@ public class MainLevel extends Level
 	{
 		RenderHelper.clear();
 		
-		Game.shader.use();
-		Game.shader.uniformData4f("viewSpace", Transform.viewSpace());
-		Game.shader.uniformData4f("projectedSpace", Transform.perspectiveMatrix());
+		Game.setShader(Game.PHONG);
+		Game.getShader().uniformData4f("viewSpace", Transform.viewSpace());
+		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());
 		
 		Material.getMaterial("default").update();
 		shadowMap.readBind();

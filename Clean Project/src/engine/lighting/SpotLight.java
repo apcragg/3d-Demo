@@ -45,14 +45,14 @@ public class SpotLight implements Light
 	{
 		if (updateCounter < PhongShader.MAX_SPOT_LIGHTS)
 		{
-			Game.shader.uniformData1f("spotLights[" + updateCounter + "].angle", angle);
-			Game.shader.uniformData1f("spotLights[" + updateCounter
+			Game.getShader().uniformData1f("spotLights[" + updateCounter + "].angle", angle);
+			Game.getShader().uniformData1f("spotLights[" + updateCounter
 					+ "].base.intensity", intensity);
-			Game.shader.uniformData3f("spotLights[" + updateCounter
+			Game.getShader().uniformData3f("spotLights[" + updateCounter
 					+ "].base.color", color);
-			Game.shader.uniformData3f("spotLights[" + updateCounter
+			Game.getShader().uniformData3f("spotLights[" + updateCounter
 					+ "].position", pos);
-			Game.shader.uniformData3f("spotLights[" + updateCounter
+			Game.getShader().uniformData3f("spotLights[" + updateCounter
 					+ "].direction", direction);
 
 			updateCounter++;

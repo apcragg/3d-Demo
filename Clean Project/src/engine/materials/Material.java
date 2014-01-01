@@ -81,9 +81,9 @@ public class Material
 			updateTextures();
 
 			// Uniform updating
-			Game.shader.uniformData3f("specColor", specularColor);
-			Game.shader.uniformData1i("specExp", specularExponenet);
-			Game.shader.uniformData1f("specIntensity", specIntensity);
+			Game.getShader().uniformData3f("specColor", specularColor);
+			Game.getShader().uniformData1i("specExp", specularExponenet);
+			Game.getShader().uniformData1f("specIntensity", specIntensity);
 		}
 	}
 
@@ -98,32 +98,32 @@ public class Material
 			}
 			if (activatedTextures[i] && i == 1)
 			{
-				Game.shader.uniformData1i("normalMap", 1);
+				Game.getShader().uniformData1i("normalMap", 1);
 			}
 
 			if (activatedTextures[i] && i == 2 && displacementMapping)
 			{
 				if (!activatedTextures[1]) LogHelper.printError("Warning: Displacement map usage without a normal map will result in incorrect normals.");
 
-				Game.shader.uniformData1i("displacementMapping", 1);
-				Game.shader.uniformData1f("displacementFactor", getDisplacementFactor());
+				Game.getShader().uniformData1i("displacementMapping", 1);
+				Game.getShader().uniformData1f("displacementFactor", getDisplacementFactor());
 			}
 
 		}
 
 		if (!activatedTextures[2])
 		{
-			Game.shader.uniformData1i("displacementMapping", 0);
+			Game.getShader().uniformData1i("displacementMapping", 0);
 		}
 
 		if (!activatedTextures[1])
 		{
-			Game.shader.uniformData1i("normalMap", 0);
+			Game.getShader().uniformData1i("normalMap", 0);
 		}
 
 		if (parallaxMapping && activatedTextures[2])
 		{
-			Game.shader.uniformData1i("parallaxMapping", 1);
+			Game.getShader().uniformData1i("parallaxMapping", 1);
 		}
 		else if (parallaxMapping)
 		{
@@ -132,7 +132,7 @@ public class Material
 		}
 		else
 		{
-			Game.shader.uniformData1i("parallaxMapping", 0);
+			Game.getShader().uniformData1i("parallaxMapping", 0);
 		}
 	}
 

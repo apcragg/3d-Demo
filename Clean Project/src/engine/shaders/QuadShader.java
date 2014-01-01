@@ -26,7 +26,7 @@ public class QuadShader extends ShaderBase
 		createUniform("projectedSpace");
 		
 		createUniform("tex");		
-		uniformData1i("tex", 0);
+		uniformData1i("tex", 4);
 	}
 
 	public int getProgramHandle()

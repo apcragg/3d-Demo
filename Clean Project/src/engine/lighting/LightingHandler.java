@@ -31,8 +31,8 @@ public class LightingHandler implements Component
 
 	public void update()
 	{
-		Game.shader.uniformData1i("plNum", pointLights.size());
-		Game.shader.uniformData1i("slNum", spotLights.size());
+		Game.getShader().uniformData1i("plNum", pointLights.size());
+		Game.getShader().uniformData1i("slNum", spotLights.size());
 
 		for (Iterable<Light> l : lightCollection)
 		{

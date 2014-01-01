@@ -56,18 +56,17 @@ public class RenderHelper
 	
 	public static void renderQuad(int textureId)
 	{
-
-		Game.quadShader.use();
+		Game.setShader(Game.QUAD);
 		
-		GL13.glActiveTexture(GL13.GL_TEXTURE0);
+		GL13.glActiveTexture(GL13.GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, textureId);		
-	
-		Game.quadShader.uniformData4f("viewSpace", Transform.viewSpace());
-		Game.quadShader.uniformData4f("projectedSpace", Transform.perspectiveMatrix());
 		
-		quad.quadRender();
+		Game.getShader().uniformData4f("viewSpace", Transform.viewSpace());
+		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());
 		
-		Game.shader.use();
+		quad.render();
+		
+		Game.setShader(Game.PHONG);
 			
 		glBindTexture(GL_TEXTURE_2D, 0);
 		 

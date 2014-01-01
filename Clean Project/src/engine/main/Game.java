@@ -12,14 +12,15 @@ import game.levels.ShadowLevel;
 
 public class Game
 {
-	public static int PHONG = 0;
+	public static int PHONG  = 0;
 	public static int SHADOW = 1;
-	public static int QUAD = 2;
+	public static int QUAD 	 = 2;
 	
-	public static int currentShader;
-	private static ShaderBase[] shaders = new ShaderBase[5];
-	private Level[] levels = new Level[5];
+
+	private static ShaderBase[] shaders;
+	private static Level[] levels;
 	private static int currentLevel;
+	public static int currentShader;
 
 	public Game()
 	{
@@ -29,13 +30,10 @@ public class Game
 	public void setup()
 	{
 		new InputHelper();
-		shaders[0] = new PhongShader();
-		shaders[1] = new ShadowShader();
-		shaders[2] = new QuadShader();
-		levels[0] = new MainLevel();
-		levels[1] = new ShadowLevel();
-		currentLevel = 1;
-		currentShader = 0;
+		shaders = new ShaderBase[]{ new PhongShader(), new ShadowShader(), new QuadShader()};
+		levels 	= new Level[]{ new MainLevel(), new ShadowLevel()};
+		currentLevel 	= 1;
+		currentShader 	= 0;
 	}
 
 	public void update()

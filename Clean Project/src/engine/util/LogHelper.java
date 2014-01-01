@@ -4,9 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class LogHelper
 {
@@ -33,7 +30,7 @@ public class LogHelper
 		try
 		{
 			writer = new BufferedWriter(new FileWriter(f));
-			writer.write(infoLog.toString());
+			writer.write(infoLog.toString() + '\n');
 
 		}
 		catch (IOException e)

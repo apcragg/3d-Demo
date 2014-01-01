@@ -55,7 +55,7 @@ public class Material
 
 			materials.put(name, this);
 
-			LogHelper.printInfo(name + " added as a new material.");
+			LogHelper.printInfo("Added new Material: " + name);
 		}
 		else
 		{

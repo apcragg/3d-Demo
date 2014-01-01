@@ -29,9 +29,6 @@ public class MaterialLoader
 				if (line.startsWith("newmtl"))
 				{
 					material = new Material(RegexHelper.getRegex(".+\\s(.*)", line).group(1));
-
-					LogHelper.printInfo("Loaded new Material: "
-							+ material.getName());
 				}
 
 				// loads the diffuse map from file
@@ -55,9 +52,6 @@ public class MaterialLoader
 					String t_path = RegexHelper.getRegex("\\\\([\\w|-|_|\\s]*)\\.", line).group(1);
 
 					String t_extension = RegexHelper.getRegex("(\\..*)", line).group(1);
-
-					LogHelper.printInfo("Normal Texture loaded from: " + t_path
-							+ t_extension);
 
 					material.setTexture(1, new Texture(t_path + t_extension).getTexture().getTextureID());
 				}

@@ -21,8 +21,7 @@ import engine.util.LogHelper;
 
 public class ShadowMapFBO
 {
-	private int fbo;
-	private int d_texture;
+	private int fbo, d_texture, c_texture;
 
 	private int width, height;
 	
@@ -41,8 +40,8 @@ public class ShadowMapFBO
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		
 		//creates the color texture and initializes its parameters
-		d_texture = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D, d_texture);
+		c_texture = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, c_texture);
 				
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -51,16 +50,30 @@ public class ShadowMapFBO
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
 		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
 		
-		//creates the depth renderbuffer to allow for depth testing
-		int depthrenderbuffer;
-		depthrenderbuffer = glGenRenderbuffers();
-		glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);	
+		//creates the depth texture
+		d_texture = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, d_texture);
+				
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, (ByteBuffer) null);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
+		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);	
+		
+//		//creates the depth renderbuffer to allow for depth testing
+//		int depthrenderbuffer;
+//		depthrenderbuffer = glGenRenderbuffers();
+//		glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
+//		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+//		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);	
 		
 		//binds the COLOR0 attachment to the draw framebuffer
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, d_texture, 0);	
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, c_texture, 0);	
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);	
+		
+		//binds the Depth attachment to the draw framebuffer
+		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, d_texture, 0);	
 				
 		//Checks for framebuffer completeness
 		int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);		
@@ -93,7 +106,10 @@ public class ShadowMapFBO
 	public void readBind()
 	{	
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, d_texture);	    
+		glBindTexture(GL_TEXTURE_2D, c_texture);	  
+		
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, d_texture);	
 	}
 	
 	public void readUnBind()
@@ -110,5 +126,10 @@ public class ShadowMapFBO
 	public int getD_texture()
 	{
 		return d_texture;
+	}
+
+	public int getC_texture()
+	{
+		return c_texture;
 	}
 }

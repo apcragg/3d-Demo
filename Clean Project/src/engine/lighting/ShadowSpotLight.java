@@ -14,7 +14,7 @@ public class ShadowSpotLight extends SpotLight
 	
 	public void update()
 	{
-		Transform.lightOrthoMatrix = Transform.perspectiveMatrix();//Transform.orthographicSpace(-100,100,-20, 50, -75,75);
+		Transform.lightOrthoMatrix = Transform.perspectiveMatrix();//Transform.orthographicSpace(-10,10,-10, 10, -10,20);
 		Transform.lightViewMatrix = Transform.lightViewSpace(pos, direction);
 		//Transform.lightViewMatrix = Transform.lightViewSpace(Camera.getPos(), Camera.getForward());
 		

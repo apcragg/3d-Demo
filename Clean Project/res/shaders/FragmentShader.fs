@@ -7,6 +7,7 @@ layout(location = 0) out vec3 colorOUT;
 in vec3 world_pos;
 in vec3 object_normal;
 in vec2 object_uvs;
+in vec4 shadowCoord;
 in mat3 tbnMatrix;
 
 struct BaseLight
@@ -203,24 +204,43 @@ void calculateParallax()
 	normalize(object_normal);
 }
 
+float calculateShadows()
+{
+	float visibility = 1.0;
+	float bias = .001f;
+	
+	vec2 uvCoord = shadowCoord.xy / shadowCoord.w;
+	float z  = (shadowCoord.z - bias) / shadowCoord.w;
+	
+	if (texture(shadowTex, uvCoord).x  <  z)
+	{
+		visibility = 0.0;
+	}
+		
+		return visibility;
+}
+
 void main()
 {
 	//pre comp fixes
-uvCoords.y = -uvCoords.y;
+	uvCoords.y = -uvCoords.y;
 	
 	normal = normalize(object_normal);
 	calculateParallax();
 	calculateNormals();
+	
+	//shadow mapping
+	float s_factor = calculateShadows();
 
 	//main lighting
 	vec4 lightColor 		= calculateLight(mainLight.base, mainLight.direction, 1);
 	vec4 ambientColor 		= vec4(ambient.base.color * ambient.base.intensity, 1f) * textureColor();
 	vec4 pointLightColor 	= pointLightsLoop();
-	vec4 spotLightColor 	= spotLightLoop();
+	vec4 spotLightColor 	= spotLightLoop() * s_factor;
 	vec4 fogColor 			= calculateFog();
 	
 	//final color addition
- 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor;
+ 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + fogColor;
 	
 	//gamma
 	color.x = pow(color.x, 1f/1.8f);

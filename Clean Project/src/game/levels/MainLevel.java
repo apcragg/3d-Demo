@@ -67,7 +67,7 @@ public class MainLevel extends Level
 
 		defaultMaterial.setTexture(0, new Texture("test.png").getTexture().getTextureID());
 
-		Transform.setupPerspective(Window.ASPECT_RATIO, 85, 1000f);
+		Transform.setupPerspective(85, 1000f);
 		PhongShader.useProgram();
 
 		MaterialLoader.loadMaterial("/res/mtl/ground.mtl");

@@ -59,14 +59,13 @@ public class ShadowLevel extends Level
 		meshes.add(floor);
 		
 		StandardMesh sphere = new StandardMesh();
-		sphere.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		sphere.addVertices(ObjectLoader.loadOBJ("/res/OBJ/teaTurbo.obj"));
 		sphere.setMaterial("testMaterial");
 		sphere.formMesh();
-		sphere.setTranslation(new Vector3f(0f, 16f, 0f));
+		sphere.setTranslation(new Vector3f(0f, 8f, 0f));
+		sphere.setRotation(new Vector3f(0f, 60f, 0f));
 		sphere.setScale(4f);
-		meshes.add(sphere);
-		
-		
+		meshes.add(sphere);	
 	}
 	
 	public void render()
@@ -97,6 +96,7 @@ public class ShadowLevel extends Level
 		Game.setShader(Game.PHONG);
 		Game.getShader().uniformData4f("viewSpace", Transform.viewSpace());
 		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());	
+		Game.getShader().uniformData4f("lightSpace", Transform.lightSpace());
 		
 		//shadow
 		shadowMap.readBind();

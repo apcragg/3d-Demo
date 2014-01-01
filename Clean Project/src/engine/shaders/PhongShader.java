@@ -28,6 +28,7 @@ public class PhongShader extends ShaderBase
 		createUniform("projectedSpace");
 		createUniform("worldSpace");
 		createUniform("viewSpace");
+		createUniform("lightSpace");
 
 		/*
 		 * Lighting uniforms

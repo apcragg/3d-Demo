@@ -5,13 +5,16 @@ layout(location = 1) in vec2 uv;
 layout(location = 2) in vec3 normal;
 layout(location = 3) in vec3 tangent;
 
+//space matricies
 uniform mat4 projectedSpace;
 uniform mat4 worldSpace;
 uniform mat4 viewSpace;
-uniform int displacementMapping;
+uniform mat4 lightSpace;
 
+//displacement mapping
 uniform sampler2D displacementTex;
 uniform float displacementFactor;
+uniform int displacementMapping;
 uniform vec3 cameraPos;
 
 vec3 temp_World_pos;
@@ -27,6 +30,7 @@ out vec3 object_normal;
 out vec2 object_uvs;
 out mat3 tbnMatrix;
 out vec3 camera_Pos;
+out vec4 shadowCoord;
 
 //Benny's code. See engine.main.OBJLoader in the calculateTangnet() method for his github link.
 mat3  calculateTBN()
@@ -66,14 +70,23 @@ vec3 calculateDisplacement()
 
 void main()
 {
+	//displacement mapping
 	temp_World_pos = calculateDisplacement();
 	
+	//into world space
 	world_pos = (worldSpace * vec4(temp_World_pos, 1f)).xyz;
+	
+	//pass through uvs
 	object_uvs = uv;
+	
+	//puts the normals into world space
 	object_normal = normalize(worldSpace * vec4(normal, 0.0f)).xyz;
 	
 	gl_Position =  (projectedSpace * viewSpace * vec4(world_pos, 1f));
 
 	tbnMatrix = calculateTBN();	
 	camera_Pos = cameraPos;
+	
+	//shadow mapping
+	shadowCoord =  (biasMatrix * lightSpace) * vec4(world_pos, 1f);
 }

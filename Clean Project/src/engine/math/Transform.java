@@ -5,16 +5,15 @@ import engine.renderer.Camera;
 public class Transform
 {
 	private static Vector3f translation, rotation, scale;
-	private static float aspectRatio, depth;
+	private static float depth;
 	private static int fov;
 	
 	public static Vector3f currentLight = new Vector3f();
 	public static Matrix4f lightOrthoMatrix = new Matrix4f().identity();
 	public static Matrix4f lightViewMatrix = new Matrix4f().identity();
 
-	public static void setupPerspective(float ar, int fov, float depth)
+	public static void setupPerspective(int fov, float depth)
 	{
-		Transform.aspectRatio = ar;
 		Transform.fov = fov;
 		Transform.depth = depth;
 	}

@@ -25,6 +25,12 @@ public class ShadowMapFBO
 
 	private int width, height;
 	
+	/**
+	 * Creates and intiialzies a new framebuffer with color and depth texture attachments.
+	 * @param width Texture width
+	 * @param height Texture height
+	 */
+	
 	public ShadowMapFBO(int width, int height) 
 	{
 		this.width = width;
@@ -33,7 +39,7 @@ public class ShadowMapFBO
 		initializeFBO();
 	}
 
-	public void initializeFBO()
+	private void initializeFBO()
 	{
 		//creates and binds a new framebuffer
 		fbo = glGenFramebuffers();				
@@ -61,13 +67,6 @@ public class ShadowMapFBO
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
 		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);	
 		
-//		//creates the depth renderbuffer to allow for depth testing
-//		int depthrenderbuffer;
-//		depthrenderbuffer = glGenRenderbuffers();
-//		glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-//		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-//		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);	
-		
 		//binds the COLOR0 attachment to the draw framebuffer
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, c_texture, 0);	
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);	
@@ -84,6 +83,11 @@ public class ShadowMapFBO
 		}
 		
 	}
+	
+	/**
+	 * Binds the framebuffer from drawing, sets the viewport to the texture size, and clears the frame buffer
+	 * of previous contents
+	 */
 	
 	public void writeBind()
 	{
@@ -105,29 +109,47 @@ public class ShadowMapFBO
 	
 	public void readBind()
 	{	
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, c_texture);	  
 		
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, d_texture);	
 	}
 	
+	/**
+	 * Unbinds the texture. not entirely necessary but it's being safe.
+	 */
+	
 	public void readUnBind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+	/**
+	 * Resets the viewport to the normal window and unbinds the framebuffer from drawing.
+	 */
+	
 	public void writeUnBind()
 	{
 		glViewport(0,0, Window.HEIGHT, Window.WIDTH);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);	
 	}
 	
+	/**
+	 * Returns the texture id of the depth texture.
+	 * @return Depth texture id
+	 */
+	
 	public int getD_texture()
 	{
 		return d_texture;
 	}
 
+	/**
+	 * Returns the texture id of the color0 texture.
+	 * @return Color0 texture id
+	 */
+	
 	public int getC_texture()
 	{
 		return c_texture;

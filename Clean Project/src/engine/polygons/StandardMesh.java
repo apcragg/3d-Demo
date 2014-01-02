@@ -207,17 +207,17 @@ public class StandardMesh implements Mesh
 
 	public void translate(Vector3f v)
 	{
-		translation.add(v);
+		translation = translation.add(v);
 	}
 
 	public void rotate(Vector3f v)
 	{
-		rotation.add(v);
+		rotation = rotation.add(v);
 	}
 
 	public void sclae(Vector3f v)
 	{
-		scale.add(v);
+		scale = scale.add(v);
 	}
 
 	public void scale(float f)

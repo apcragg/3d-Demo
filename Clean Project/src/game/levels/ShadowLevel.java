@@ -28,7 +28,6 @@ public class ShadowLevel extends Level
 {
 	private LightingHandler lights;
 	private List<StandardMesh> meshes;
-	private ShadowMapFBO shadowMap;
 	
 	int test;
 	
@@ -38,7 +37,6 @@ public class ShadowLevel extends Level
 		meshes = new ArrayList<StandardMesh>();
 		
 		test = new Texture("test.png").getTextureID();
-		shadowMap = new ShadowMapFBO(2048, 2048);
 		
 		setup();
 	}
@@ -46,7 +44,9 @@ public class ShadowLevel extends Level
 	private void setup()
 	{
 		lights.addLight(new AmbientLight(.02f, Light.WHITE_LIGHT));
-		lights.addLight(new ShadowSpotLight(new Vector3f(-50f, 26f, 0f), new Vector3f(1f, 1f, 1f), new Vector3f(1f, -.5f, 0f), .4f, 50f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(-150f, 36f, 0f), new Vector3f(1f, .47f, 1f), new Vector3f(1f, -.5f, 0f), .4f, 50f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(150f, 36f, 150f), new Vector3f(1f, 1f, 1f), new Vector3f(-1f, -.5f, -1f), .4f, 50f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(0f, 36f, -150f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.5f, 1f), .4f, 50f));
 		
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
@@ -54,17 +54,17 @@ public class ShadowLevel extends Level
 		floor.setMaterial("metalMtl");
 		floor.formMesh();
 		floor.setTranslation(new Vector3f());
-		floor.setScale(1f);
-		floor.setTextureScale(.2f);
+		floor.setScale(2f);
+		floor.setTextureScale(.05f);
 		meshes.add(floor);
 		
 		StandardMesh sphere = new StandardMesh();
 		sphere.addVertices(ObjectLoader.loadOBJ("/res/OBJ/teaTurbo.obj"));
 		sphere.setMaterial("testMaterial");
 		sphere.formMesh();
-		sphere.setTranslation(new Vector3f(0f, 8f, 0f));
-		sphere.setRotation(new Vector3f(0f, 60f, 0f));
-		sphere.setScale(4f);
+		sphere.setTranslation(new Vector3f(0f, 16f, 0f));
+		sphere.setRotation(new Vector3f(0f, 80f, 0f));
+		sphere.setScale(3f);
 		meshes.add(sphere);	
 	}
 	
@@ -72,19 +72,25 @@ public class ShadowLevel extends Level
 	{
 		shadowPass();
 		renderPass();
-		RenderHelper.renderQuad(shadowMap.getD_texture());
+		RenderHelper.renderQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getD_texture());
 	}
 	
 	private void shadowPass()
 	{
-		shadowMap.writeBind();
-		
-		Game.setShader(Game.SHADOW);
-		Game.getShader().uniformData4f("lightSpace", Transform.lightSpace());
-		
-		for(StandardMesh m : meshes) m.render();
-		
-		shadowMap.writeUnBind();
+		for(Light l :  lights.getShadowSpotLights())
+		{
+			ShadowSpotLight light = ((ShadowSpotLight) l);
+			
+			light.lightSpaceUpdate();
+			light.getLightMap().writeBind();
+			
+			Game.setShader(Game.SHADOW);
+			Game.getShader().uniformData4f("lightSpace", Transform.lightSpace());
+			
+			for(StandardMesh m : meshes) m.render();
+			
+			light.getLightMap().writeUnBind();		
+		}	
 	}
 	
 	private void renderPass()
@@ -96,19 +102,30 @@ public class ShadowLevel extends Level
 		Game.setShader(Game.PHONG);
 		Game.getShader().uniformData4f("viewSpace", Transform.viewSpace());
 		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());	
-		Game.getShader().uniformData4f("lightSpace", Transform.lightSpace());
 		
-		//shadow
-		shadowMap.readBind();
+		for(int i = 0; i < lights.getShadowSpotLights().size(); i++)
+		{
+			((ShadowSpotLight) lights.getShadowSpotLights().get(i)).lightSpaceUpdate();
+			Game.getShader().uniformData4f("lightSpace[" + i + "]", Transform.lightSpace());	
+			
+			//shadow
+			((ShadowSpotLight) (lights.getShadowSpotLights().get(i))).getLightMap().readBind(i);;
+		}		
 
 		//render
 		for(StandardMesh m : meshes) m.render();
 		
-		shadowMap.readUnBind();
+		ShadowMapFBO.readUnBind();
 	}
 
 	public void update()
 	{
+		if(InputHelper.isKeyDown(Keyboard.KEY_UP))
+		meshes.get(1).translate(new Vector3f(0f, .05f, 0f));
+		
+		if(InputHelper.isKeyDown(Keyboard.KEY_DOWN))
+			meshes.get(1).translate(new Vector3f(0f, -.05f, 0f));
+		
 		for(StandardMesh m : meshes) m.update();
 		lights.update();
 		

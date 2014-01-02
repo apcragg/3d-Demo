@@ -1,4 +1,5 @@
 #version 330
+#define MAX_SHADOW_SPOT_LIGHTS 4
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 uv;
@@ -9,7 +10,10 @@ layout(location = 3) in vec3 tangent;
 uniform mat4 projectedSpace;
 uniform mat4 worldSpace;
 uniform mat4 viewSpace;
-uniform mat4 lightSpace;
+uniform mat4 lightSpace[MAX_SHADOW_SPOT_LIGHTS];
+
+//shadow uniforms
+uniform int s2Num;
 
 //displacement mapping
 uniform sampler2D displacementTex;
@@ -30,7 +34,8 @@ out vec3 object_normal;
 out vec2 object_uvs;
 out mat3 tbnMatrix;
 out vec3 camera_Pos;
-out vec4 shadowCoord;
+out vec4 shadowCoord[MAX_SHADOW_SPOT_LIGHTS];
+flat out int s2Num_;
 
 //Benny's code. See engine.main.OBJLoader in the calculateTangnet() method for his github link.
 mat3  calculateTBN()
@@ -87,6 +92,11 @@ void main()
 	tbnMatrix = calculateTBN();	
 	camera_Pos = cameraPos;
 	
-	//shadow mapping
-	shadowCoord =  (biasMatrix * lightSpace) * vec4(world_pos, 1f);
+	//shadow mappinh
+	shadowCoord[0] = (biasMatrix * lightSpace[0]) * vec4(world_pos, 1f);
+	shadowCoord[1] = (biasMatrix * lightSpace[1]) * vec4(world_pos, 1f);
+	shadowCoord[2] = (biasMatrix * lightSpace[2]) * vec4(world_pos, 1f);
+	shadowCoord[3] = (biasMatrix * lightSpace[3]) * vec4(world_pos, 1f);
+
+	s2Num_ = s2Num;
 }

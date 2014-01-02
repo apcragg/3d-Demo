@@ -107,12 +107,12 @@ public class ShadowMapFBO
 	 * @param textureSlot Specifies the GL_TEXTUREi slot the framebuffer will be read from.
 	 */
 	
-	public void readBind()
+	public void readBind(int offset)
 	{	
-		glActiveTexture(GL_TEXTURE4);
+		glActiveTexture(GL_TEXTURE3 + 4 + offset);
 		glBindTexture(GL_TEXTURE_2D, c_texture);	  
 		
-		glActiveTexture(GL_TEXTURE3);
+		glActiveTexture(GL_TEXTURE3 + offset);
 		glBindTexture(GL_TEXTURE_2D, d_texture);	
 	}
 	
@@ -120,7 +120,7 @@ public class ShadowMapFBO
 	 * Unbinds the texture. not entirely necessary but it's being safe.
 	 */
 	
-	public void readUnBind()
+	public static void readUnBind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

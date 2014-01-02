@@ -10,11 +10,12 @@ import engine.main.Game;
 
 public class LightingHandler implements Component
 {
-	public List<Light> lights;
-	public List<Light> pointLights;
-	public List<Light> spotLights;
-
-	public List<Iterable<Light>> lightCollection;
+	private List<Light> lights;
+	private List<Light> pointLights;
+	private List<Light> spotLights;
+	private List<Light> shadowSpotLights;
+	
+	private List<Iterable<Light>> lightCollection;
 
 	public LightingHandler()
 	{
@@ -23,16 +24,21 @@ public class LightingHandler implements Component
 		lights = new ArrayList<Light>();
 		pointLights = new ArrayList<Light>();
 		spotLights = new ArrayList<Light>();
+		shadowSpotLights = new ArrayList<Light>();
 
 		lightCollection.add(lights);
 		lightCollection.add(pointLights);
 		lightCollection.add(spotLights);
+		lightCollection.add(shadowSpotLights);
 	}
 
 	public void update()
 	{
 		Game.getShader().uniformData1i("plNum", pointLights.size());
 		Game.getShader().uniformData1i("slNum", spotLights.size());
+		Game.getShader().uniformData1i("s2Num", shadowSpotLights.size());
+		
+		System.out.println("SIZE: " + shadowSpotLights.size());
 
 		for (Iterable<Light> l : lightCollection)
 		{
@@ -46,6 +52,7 @@ public class LightingHandler implements Component
 		}
 
 		SpotLight.reset();
+		ShadowSpotLight.reset();
 		PointLight.reset();
 
 	}
@@ -72,6 +79,14 @@ public class LightingHandler implements Component
 
 			return true;
 		}
+		
+		if (l instanceof ShadowSpotLight)
+		{
+			shadowSpotLights.add(l);
+
+			return true;
+		}
+
 
 		if (l instanceof SpotLight)
 		{
@@ -91,6 +106,26 @@ public class LightingHandler implements Component
 	public void setup()
 	{
 
+	}
+
+	public List<Light> getLights()
+	{
+		return lights;
+	}
+
+	public List<Light> getPointLights()
+	{
+		return pointLights;
+	}
+
+	public List<Light> getSpotLights()
+	{
+		return spotLights;
+	}
+
+	public List<Light> getShadowSpotLights()
+	{
+		return shadowSpotLights;
 	}
 
 }

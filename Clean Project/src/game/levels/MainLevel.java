@@ -179,7 +179,7 @@ public class MainLevel extends Level
 		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());
 		
 		Material.getMaterial("default").update();
-		shadowMap.readBind();
+		shadowMap.readBind(0);
 		
 		pool.render();
 		for (StandardMesh m : meshes) m.render();	

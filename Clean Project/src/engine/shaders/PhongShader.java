@@ -9,6 +9,7 @@ public class PhongShader extends ShaderBase
 	private static int programHandle;
 	public final static int MAX_POINT_LIGHTS = 64;
 	public final static int MAX_SPOT_LIGHTS = 8;
+	public static final int MAX_SHADOW_SPOT_LIGHTS = 4;
 
 	public PhongShader()
 	{
@@ -28,7 +29,11 @@ public class PhongShader extends ShaderBase
 		createUniform("projectedSpace");
 		createUniform("worldSpace");
 		createUniform("viewSpace");
-		createUniform("lightSpace");
+		
+		for (int i = 0; i < MAX_SHADOW_SPOT_LIGHTS; i++)
+		{
+			createUniform("lightSpace[" + i + "]");
+		}		
 
 		/*
 		 * Lighting uniforms
@@ -56,9 +61,19 @@ public class PhongShader extends ShaderBase
 			createUniform("spotLights[" + i + "].direction");
 			createUniform("spotLights[" + i + "].position");
 		}
+		
+		for (int i = 0; i < MAX_SHADOW_SPOT_LIGHTS; i++)
+		{
+			createUniform("shadowSpotLights[" + i + "].base.intensity");
+			createUniform("shadowSpotLights[" + i + "].base.color");
+			createUniform("shadowSpotLights[" + i + "].angle");
+			createUniform("shadowSpotLights[" + i + "].direction");
+			createUniform("shadowSpotLights[" + i + "].position");
+		}
 
 		createUniform("plNum");
 		createUniform("slNum");
+		createUniform("s2Num");
 
 		/*
 		 * Material Uniforms
@@ -77,13 +92,21 @@ public class PhongShader extends ShaderBase
 		createUniform("normalTex");
 		createUniform("displacementTex");
 		createUniform("parallaxTex");
-		createUniform("shadowTex");
+		
+		for (int i = 0; i < MAX_SHADOW_SPOT_LIGHTS; i++)
+		{
+			createUniform("shadowTex[" + i + "]");
+		}
 
 		uniformData1i("diffuseTex", 0);
 		uniformData1i("normalTex", 1);
 		uniformData1i("displacementTex", 2);
 		uniformData1i("parallaxTex", 2);
-		uniformData1i("shadowTex", 3);
+
+		for (int i = 0; i < MAX_SHADOW_SPOT_LIGHTS; i++)
+		{
+			uniformData1i("shadowTex[" + i + "]", 3 + i);			
+		}
 	}
 
 	public static int getProgramHandle()

@@ -1,14 +1,16 @@
 #version 330
 #define MAX_POINT_LIGHTS 64
 #define MAX_SPOT_LIGHTS 8
+#define MAX_SHADOW_SPOT_LIGHTS 4
 
 layout(location = 0) out vec3 colorOUT;
 
 in vec3 world_pos;
 in vec3 object_normal;
 in vec2 object_uvs;
-in vec4 shadowCoord;
+in vec4 shadowCoord[MAX_SHADOW_SPOT_LIGHTS];
 in mat3 tbnMatrix;
+flat in int s2Num_;
 
 struct BaseLight
 {
@@ -47,14 +49,16 @@ uniform DirectionalLight mainLight;
 uniform AmbientLight ambient;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
+uniform SpotLight shadowSpotLights[MAX_SHADOW_SPOT_LIGHTS];
 uniform int plNum;
 uniform int slNum;
+
 
 //textures
 uniform sampler2D diffuseTex;
 uniform sampler2D normalTex;
 uniform sampler2D parallaxTex;
-uniform sampler2D shadowTex;
+uniform sampler2D shadowTex[MAX_SHADOW_SPOT_LIGHTS];
 uniform float textureScale;
 uniform int parallaxMapping;
 
@@ -204,20 +208,36 @@ void calculateParallax()
 	normalize(object_normal);
 }
 
-float calculateShadows()
+vec4 calculateShadows(SpotLight s, int i)
 {
 	float visibility = 1.0;
-	float bias = .001f;
 	
-	vec2 uvCoord = shadowCoord.xy / shadowCoord.w;
-	float z  = (shadowCoord.z - bias) / shadowCoord.w;
+	float cosTheta = clamp(dot(normal, normalize(s.direction)), 0f, 1f);
+	float bias = .001f;// * tan(acos(cosTheta));
 	
-	if (texture(shadowTex, uvCoord).x  <  z)
+	bias = clamp(bias, 0.0f, 0.01f);
+	
+	vec2 uvCoord = shadowCoord[i].xy / shadowCoord[i].w;
+	float z  = (shadowCoord[i].z - bias) / shadowCoord[i].w;
+	
+	if (texture(shadowTex[i], uvCoord).x  <  z)
 	{
 		visibility = 0.0;
 	}
 		
-		return visibility;
+		return visibility * calculateSpotLights(s);
+}
+
+vec4 shadowSpotLightLoop()
+{
+	vec4 totalLight = vec4(0f, 0f, 0f, 1f);
+	
+	for(int i = -1; i  < s2Num_; i++)
+	{
+		totalLight += calculateShadows(shadowSpotLights[i], i);
+	}
+	
+	return totalLight;
 }
 
 void main()
@@ -230,17 +250,17 @@ void main()
 	calculateNormals();
 	
 	//shadow mapping
-	float s_factor = calculateShadows();
+	vec4 shadowSpotLightColor = shadowSpotLightLoop();
 
 	//main lighting
 	vec4 lightColor 		= calculateLight(mainLight.base, mainLight.direction, 1);
 	vec4 ambientColor 		= vec4(ambient.base.color * ambient.base.intensity, 1f) * textureColor();
 	vec4 pointLightColor 	= pointLightsLoop();
-	vec4 spotLightColor 	= spotLightLoop() * s_factor;
+	vec4 spotLightColor 	= spotLightLoop();
 	vec4 fogColor 			= calculateFog();
 	
 	//final color addition
- 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + fogColor;
+ 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + shadowSpotLightColor + fogColor;
 	
 	//gamma
 	color.x = pow(color.x, 1f/1.8f);

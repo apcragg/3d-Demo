@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import org.newdawn.slick.opengl.TextureLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
+import static org.lwjgl.opengl.GL11.*;
 import engine.util.LogHelper;
 
 public class Texture
@@ -50,6 +51,11 @@ public class Texture
 			System.out.println("Failed to load texture at: " + filePath);
 			e.printStackTrace();
 		}
+		
+		glBindTexture(GL_TEXTURE_2D, this.getTextureID());
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	/**

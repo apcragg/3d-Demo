@@ -47,7 +47,7 @@ public class Main
 
 			game.render();
 			Display.update();
-			Display.sync(120);
+			//Display.sync(120);
 
 			frameTime += Time.getTime() - currentTime;
 			frameCount++;

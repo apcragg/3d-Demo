@@ -65,7 +65,7 @@ public class MainLevel extends Level
 		lights.addLight(new ShadowSpotLight(new Vector3f(75f, 50f, 3f), new Vector3f(1f, 0f, 0f), new Vector3f(-0.77229255f, -0.48175365f, -0.41409853f),  .55f, 40f)); //-0.77229255f, -0.48175365f, -0.41409853f
 		lights.addLight(new PlayerSpotLight(new Vector3f(), new Vector3f(1f, 1f, 1f), new Vector3f(0f, 0f, 1f), .7f, 10f));
 
-		defaultMaterial.setTexture(0, new Texture("test.png").getTexture().getTextureID());
+		defaultMaterial.setTexture(0, new Texture("blank.png").getTexture().getTextureID());
 
 		Transform.setupPerspective(85, 1000f);
 		PhongShader.useProgram();
@@ -100,7 +100,7 @@ public class MainLevel extends Level
 		testMaterial.setSpecIntensity(.7f);
 
 		Material lightMaterial = new Material("lightMaterial");
-		lightMaterial.setTexture(0, new Texture("test.png").getTextureID());
+		lightMaterial.setTexture(0, new Texture("blank.png").getTextureID());
 		// lightMaterial.setTexture(1, new
 		// Texture("weirdNormal.jpg").getTexture().getTextureID());
 

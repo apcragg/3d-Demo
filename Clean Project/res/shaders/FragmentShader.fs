@@ -3,7 +3,7 @@
 #define MAX_SPOT_LIGHTS 8
 #define MAX_SHADOW_SPOT_LIGHTS 4
 
-layout(location = 0) out vec3 colorOUT;
+layout(location = 0) out vec4 color;
 
 in vec3 world_pos;
 in vec3 object_normal;
@@ -77,11 +77,35 @@ vec3 normal;
 float attenuation = 1f;
 float fogFalloff = 150f;
 
-vec4 color;
+//shadow mapping
+const vec2 poissonDisk[] = vec2[](
+vec2(-0.06470083f, -0.9226869f),
+vec2(0.2496478f, -0.4083893f),
+vec2(-0.4978239f, -0.595479f),
+vec2(-0.2198737f, -0.3370214f),
+vec2(-0.649868f, -0.2171402f),
+vec2(0.7954451f, 0.071216f),
+vec2(0.4748782f, 0.3046738f),
+vec2(-0.2104412f, 0.2523279f),
+vec2(-0.004335199f, 0.6138465f),
+vec2(-0.6704991f, 0.4099813f),
+vec2(-0.5012408f, 0.8232943f),
+vec2(0.4141222f, -0.865628f),
+vec2(0.2112032f, 0.9613814f),
+vec2(0.6426348f, 0.716343f),
+vec2(-0.9788542f, 0.1075208f),
+vec2(-0.1468241f, 0.9574707f)
+);
 
 vec4 textureColor()
 {
     return texture2D(diffuseTex, uvCoords);
+}
+
+float random(vec3 seed, int i)
+{
+	float dot_product = dot(vec4(seed, i), vec4(12.984f,78.23f,45.164f,94.673f));
+    return (sin(dot_product) * 43758.54f);
 }
 
 vec4 calculateSpecular(BaseLight base, vec3 direction)
@@ -149,15 +173,18 @@ vec4 pointLightsLoop()
 	return clamp(totalLight, 0f, 1f);
 }
 
-vec4 calculateSpotLights(SpotLight s)
+vec4 calculateSpotLights(SpotLight s, float visibility)
 {
+	visibility = clamp(visibility, 0f, 1f);
+
 	vec4 totalLight = vec4(0f, 0f, 0f, 1f);
 	float spotFactor = dot(normalize(world_pos - s.position), normalize(s.direction));
 	
 	if((spotFactor > s.angle))
 	{
 		totalLight +=  (calculateLight(s.base, s.direction, 0) / length(world_pos - s.position)) 
-						* (1.0 - (1.0 - spotFactor)/(1.0 - s.angle));;
+						* (1.0 - (1.0 - spotFactor)/(1.0 - s.angle)) * visibility;
+		totalSpec += (calculateSpecular(s.base, s.direction).xyz * (1.0 - (1.0 - spotFactor)/(1.0 - s.angle)) * vec3(1f, 1f, 1f)) * visibility;
 	}
 	
 	return totalLight;
@@ -169,7 +196,7 @@ vec4 spotLightLoop()
 	
 	for(int i = -1; i  < slNum; i++)
 	{
-		totalLight += calculateSpotLights(spotLights[i]);
+		totalLight += calculateSpotLights(spotLights[i], 1);
 	}
 	
 	return totalLight;
@@ -208,24 +235,56 @@ void calculateParallax()
 	normalize(object_normal);
 }
 
+float shadowLookup(int samp, vec2 shadowUV, float z)
+{
+	float factor = 0.0f;
+	float x,y;
+	int count = 0;
+	
+	for (y = -1.5; y <= 1.5; y += 1.0)
+		for (x = -1.5; x <= 1.5; x += 1.0)
+			{
+				vec2 offset = ((vec2(x,y) * (64f/1024f)) + shadowUV) / shadowCoord[samp].w;
+				
+				offset.x = clamp(offset.x, 0.01f, 0.99f);
+				offset.y = clamp(offset.y, 0.01f, 0.99f);
+				
+				factor += texture(shadowTex[samp], offset).x < z ? 1 : 0;
+				count++;
+			}
+			
+	return (factor / count);
+}
+
 vec4 calculateShadows(SpotLight s, int i)
 {
+	// faux boolean
+	int continueLoop = 1;
+
 	float visibility = 1.0;
 	
-	float cosTheta = clamp(dot(normal, normalize(s.direction)), 0f, 1f);
-	float bias = .001f;// * tan(acos(cosTheta));
+	float cosTheta = clamp(dot(object_normal, normalize(-s.direction)), 0f, 1f);
+	float bias = .0005f * tan(acos(cosTheta));
 	
 	bias = clamp(bias, 0.0f, 0.01f);
 	
-	vec2 uvCoord = shadowCoord[i].xy / shadowCoord[i].w;
+	vec2 uvCoord = shadowCoord[i].xy;
 	float z  = (shadowCoord[i].z - bias) / shadowCoord[i].w;
 	
-	if (texture(shadowTex[i], uvCoord).x  <  z)
-	{
-		visibility = 0.0;
-	}
-		
-		return visibility * calculateSpotLights(s);
+	//if the texel is outside the shadowmap's view don't cast a shadow and early exit
+	vec2 uvTest = uvCoord / shadowCoord[i].w;
+	if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) continueLoop = 0;
+	
+	int samples = 4;	
+	for(int j = -1; j < samples && continueLoop == 1; j++)
+	{			
+		int index = int(samples*random(floor(world_pos.xyz*1000.0), j))%samples;
+	
+		//PCF filtering (sort of)
+		float factor = shadowLookup(i, (uvCoord + (poissonDisk[index]/14f)), z);
+		visibility -= factor * (1f / samples);
+	}	
+		return calculateSpotLights(s, visibility);
 }
 
 vec4 shadowSpotLightLoop()
@@ -244,8 +303,9 @@ void main()
 {
 	//pre comp fixes
 	uvCoords.y = -uvCoords.y;
-	
 	normal = normalize(object_normal);
+	
+	//prepare normals and uvs from normal/parallax maps
 	calculateParallax();
 	calculateNormals();
 	
@@ -266,12 +326,5 @@ void main()
 	color.x = pow(color.x, 1f/1.8f);
 	color.y = pow(color.y, 1f/1.8f);
 	color.z = pow(color.z, 1f/1.8f);
-	
-	colorOUT = color.xyz;
-	
-	float depth = gl_FragCoord.z;
-	depth = 1.0f - (1.0f - depth) * 1000f;
-	
-	//color = color * .00001f + vec4(vec3(depth), 1f);
 }
 

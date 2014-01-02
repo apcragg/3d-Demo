@@ -79,6 +79,7 @@ public class StandardMesh implements Mesh
 	public void updateUniforms()
 	{
 		updateTransforms();
+		Game.getShader().uniformData4f("worldSpace", Transform.spatialMatrix());
 
 		//shader specific uniforms
 		if(Game.currentShader == Game.PHONG)
@@ -86,17 +87,11 @@ public class StandardMesh implements Mesh
 			Material.getMaterial(material).update();
 			Game.getShader().uniformData1f("textureScale", textureScale);
 		}	
-		
-		Game.getShader().uniformData4f("worldSpace", Transform.spatialMatrix());
 	}
 
 	public void addVertices(List<Vertex> v)
 	{
-		for (Vertex vert : v)
-		{
-			vertices.add(vert);
-			// System.out.println(vert.getPosition());
-		}
+		for (Vertex vert : v) vertices.add(vert);
 	}
 
 	public void formMesh()
@@ -146,7 +141,84 @@ public class StandardMesh implements Mesh
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, engine.util.BufferHelper.createIntBuffer(ints), GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+	
+	/*
+	 * Vertex size accessors
+	 */
+	
+	public float getRWidth()
+	{
+		float max = 0.0f;
 
+		for (Vertex v : vertices)
+		{
+			max = max < v.getPosition().getX() ? v.getPosition().getX() : max;
+		}
+		
+		return Math.abs(max);
+	}
+	
+	public float getLWidth()
+	{
+		float max = 0.0f;
+
+		for (Vertex v : vertices)
+		{
+			max = max > v.getPosition().getX() ? v.getPosition().getX() : max;
+		}
+		
+		return Math.abs(max);
+	}
+	
+	public float getHeight()
+	{
+		float max = 0.0f;
+
+		for (Vertex v : vertices)
+		{
+			max = max < v.getPosition().getY() ? v.getPosition().getY() : max;
+		}
+		
+		return Math.abs(max);
+	}
+	
+	public float getDepth()
+	{
+		float max = 0.0f;
+
+		for (Vertex v : vertices)
+		{
+			max = max > v.getPosition().getY() ? v.getPosition().getY() : max;
+		}
+		
+		return Math.abs(max);
+	}
+
+	
+	public float getNearDepth()
+	{
+		float max = 0.0f;
+
+		for (Vertex v : vertices)
+		{
+			max = max < v.getPosition().getZ() ? v.getPosition().getZ() : max;
+		}
+		
+		return Math.abs(max);
+	}
+	
+	public float getFarDepth()
+	{
+		float max = 0.0f;
+
+		for (Vertex v : vertices)
+		{
+			max = max > v.getPosition().getZ() ? v.getPosition().getZ() : max;
+		}
+		
+		return Math.abs(max);
+	}
+	
 	public float getAbsoluteWidth()
 	{
 		float max = 0.0f, min = 0.0f;
@@ -285,18 +357,18 @@ public class StandardMesh implements Mesh
 		this.size = size;
 	}
 
-	public void test()
+	public Vector3f getTranslation()
 	{
-		for (Vertex v : vertices)
-		{
-			Matrix4f m = new Matrix4f().rotate(new Vector3f(0f, 1f, 0f));
-
-			v.setPos(m.mul(v.getPosition()));
-		}
-
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferSubData(GL_ARRAY_BUFFER, 0L, engine.util.BufferHelper.createVertexFloatArray(vertices));
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		return translation;
 	}
 
+	public Vector3f getRotation()
+	{
+		return rotation;
+	}
+
+	public Vector3f getScale()
+	{
+		return scale;
+	}
 }

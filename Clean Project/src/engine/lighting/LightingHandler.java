@@ -37,8 +37,6 @@ public class LightingHandler implements Component
 		Game.getShader().uniformData1i("plNum", pointLights.size());
 		Game.getShader().uniformData1i("slNum", spotLights.size());
 		Game.getShader().uniformData1i("s2Num", shadowSpotLights.size());
-		
-		System.out.println("SIZE: " + shadowSpotLights.size());
 
 		for (Iterable<Light> l : lightCollection)
 		{
@@ -54,7 +52,6 @@ public class LightingHandler implements Component
 		SpotLight.reset();
 		ShadowSpotLight.reset();
 		PointLight.reset();
-
 	}
 
 	public boolean addLight(Light l)

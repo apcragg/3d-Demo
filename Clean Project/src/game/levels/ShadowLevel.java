@@ -9,6 +9,7 @@ import engine.levels.Level;
 import engine.lighting.AmbientLight;
 import engine.lighting.Light;
 import engine.lighting.LightingHandler;
+import engine.lighting.PointLight;
 import engine.lighting.ShadowMapFBO;
 import engine.lighting.ShadowSpotLight;
 import engine.lighting.SpotLight;
@@ -43,15 +44,17 @@ public class ShadowLevel extends Level
 	
 	private void setup()
 	{
-		lights.addLight(new AmbientLight(.02f, Light.WHITE_LIGHT));
-		lights.addLight(new ShadowSpotLight(new Vector3f(-150f, 36f, 0f), new Vector3f(1f, .47f, 1f), new Vector3f(1f, -.5f, 0f), .4f, 50f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(150f, 36f, 150f), new Vector3f(1f, 1f, 1f), new Vector3f(-1f, -.5f, -1f), .4f, 50f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(0f, 36f, -150f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.5f, 1f), .4f, 50f));
+		RenderHelper.setBackfaceCulling(false);
+		
+		lights.addLight(new AmbientLight(.05f, Light.WHITE_LIGHT));
+		lights.addLight(new ShadowSpotLight(new Vector3f(-50f, 56f, 0f), new Vector3f(1f, .47f, 1f), new Vector3f(1f, -.7f, 0f), .4f, 25f));
+		//lights.addLight(new ShadowSpotLight(new Vector3f(50f, 76f, 50f), new Vector3f(1f, 1f, 1f), new Vector3f(-1f, -.75f, -1f), .4f, 25f));
+		//lights.addLight(new ShadowSpotLight(new Vector3f(0f, 96f, -50f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 25f));
 		
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
 		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/floor.obj"));
-		floor.setMaterial("metalMtl");
+		floor.setMaterial("default");
 		floor.formMesh();
 		floor.setTranslation(new Vector3f());
 		floor.setScale(2f);
@@ -60,7 +63,7 @@ public class ShadowLevel extends Level
 		
 		StandardMesh sphere = new StandardMesh();
 		sphere.addVertices(ObjectLoader.loadOBJ("/res/OBJ/teaTurbo.obj"));
-		sphere.setMaterial("testMaterial");
+		sphere.setMaterial("default");
 		sphere.formMesh();
 		sphere.setTranslation(new Vector3f(0f, 16f, 0f));
 		sphere.setRotation(new Vector3f(0f, 80f, 0f));
@@ -101,7 +104,9 @@ public class ShadowLevel extends Level
 		//shader uniform updating
 		Game.setShader(Game.PHONG);
 		Game.getShader().uniformData4f("viewSpace", Transform.viewSpace());
-		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());	
+		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());
+		
+		defaultMaterial.update();
 		
 		for(int i = 0; i < lights.getShadowSpotLights().size(); i++)
 		{
@@ -120,19 +125,41 @@ public class ShadowLevel extends Level
 
 	public void update()
 	{
-		if(InputHelper.isKeyDown(Keyboard.KEY_UP))
-		meshes.get(1).translate(new Vector3f(0f, .05f, 0f));
-		
-		if(InputHelper.isKeyDown(Keyboard.KEY_DOWN))
-			meshes.get(1).translate(new Vector3f(0f, -.05f, 0f));
-		
-		for(StandardMesh m : meshes) m.update();
+		updateInput();
 		lights.update();
-		
-		//inputs
+		for(StandardMesh m : meshes) m.update();	
+	}
+	
+	private void updateInput()
+	{
+		//object updating
 		Camera.update();
 		InputHelper.update();
-		if (InputHelper.isKeyDown(Keyboard.KEY_ESCAPE)) Main.quit();
+		
+		//conditional updating
+		if(InputHelper.isKeyDown(Keyboard.KEY_ESCAPE)) Main.quit();
+		
+		if(InputHelper.isKeyPressed(Keyboard.KEY_L)) deployLight();
+		
+		if(InputHelper.isKeyDown(Keyboard.KEY_UP)) meshes.get(1).translate(new Vector3f(0f, .05f, 0f));
+		
+		if(InputHelper.isKeyDown(Keyboard.KEY_DOWN)) meshes.get(1).translate(new Vector3f(0f, -.05f, 0f));
+		
+		if(InputHelper.isKeyDown(Keyboard.KEY_R)) meshes.get(1).rotate(new Vector3f(0f, 1f, 0f));
+	}
+	
+	private void deployLight()
+	{
+		StandardMesh light = new StandardMesh();
+		light.setMaterial("lightMaterial");
+		light.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		light.formMesh();
+		light.setScale(.5f);
+		Vector3f lightPos = new Vector3f(Camera.getPos());
+
+		light.setTranslation(lightPos);
+		lights.addLight(new PointLight(lightPos, new Vector3f(0f, (0f / 2), (1f / 1)), new Vector3f((float) Math.random(), (float) Math.random(), (float) Math.random()), 50f));
+		meshes.add(light);
 	}
 
 }

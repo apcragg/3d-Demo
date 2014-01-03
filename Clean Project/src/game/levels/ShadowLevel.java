@@ -46,29 +46,38 @@ public class ShadowLevel extends Level
 	{
 		RenderHelper.setBackfaceCulling(false);
 		
-		lights.addLight(new AmbientLight(.05f, Light.WHITE_LIGHT));
-		lights.addLight(new ShadowSpotLight(new Vector3f(-50f, 56f, 0f), new Vector3f(1f, .47f, 1f), new Vector3f(1f, -.7f, 0f), .4f, 25f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(50f, 76f, 50f), new Vector3f(1f, 1f, 1f), new Vector3f(-1f, -.75f, -1f), .4f, 25f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(0f, 96f, -50f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 25f));
+		lights.addLight(new AmbientLight(.02f, Light.WHITE_LIGHT));
+	//	lights.addLight(new ShadowSpotLight(new Vector3f(-50f, 56f, 0f), new Vector3f(1f, .47f, 1f), new Vector3f(1f, -.7f, 0f), .4f, 15f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(50f, 66f, 50f), new Vector3f(1f, 1f, 1f), new Vector3f(-1f, -.75f, -1f), .4f, 15f));
+		//lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -50f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 15f));
 		
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
 		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/floor.obj"));
-		floor.setMaterial("default");
+		floor.setMaterial("metalMtl");
 		floor.formMesh();
 		floor.setTranslation(new Vector3f());
 		floor.setScale(2f);
 		floor.setTextureScale(.05f);
 		meshes.add(floor);
 		
-		StandardMesh sphere = new StandardMesh();
-		sphere.addVertices(ObjectLoader.loadOBJ("/res/OBJ/teaTurbo.obj"));
-		sphere.setMaterial("default");
-		sphere.formMesh();
-		sphere.setTranslation(new Vector3f(0f, 16f, 0f));
-		sphere.setRotation(new Vector3f(0f, 80f, 0f));
-		sphere.setScale(3f);
-		meshes.add(sphere);	
+		StandardMesh object0 = new StandardMesh();
+		object0.addVertices(ObjectLoader.loadOBJ("/res/OBJ/suzanne.obj"));
+		object0.setMaterial("default");
+		object0.formMesh();
+		object0.setTranslation(new Vector3f(0f, 26f, 0f));
+		object0.setRotation(new Vector3f(90f, 0f, 0f));
+		object0.setScale(6f);
+		meshes.add(object0);	
+		
+		StandardMesh object1 = new StandardMesh();
+		object1.addVertices(ObjectLoader.loadOBJ("/res/OBJ/suzanne.obj"));
+		object1.setMaterial("default");
+		object1.formMesh();
+		object1.setTranslation(new Vector3f(23f, 26f, 5f));
+		object1.setRotation(new Vector3f(90f, 0f, 0f));
+		object1.setScale(6f);
+		meshes.add(object1);	
 	}
 	
 	public void render()
@@ -102,6 +111,8 @@ public class ShadowLevel extends Level
 		RenderHelper.clear();
 		
 		//shader uniform updating
+		Transform.setupPerspective(85, 1000f);
+		
 		Game.setShader(Game.PHONG);
 		Game.getShader().uniformData4f("viewSpace", Transform.viewSpace());
 		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());
@@ -141,9 +152,17 @@ public class ShadowLevel extends Level
 		
 		if(InputHelper.isKeyPressed(Keyboard.KEY_L)) deployLight();
 		
-		if(InputHelper.isKeyDown(Keyboard.KEY_UP)) meshes.get(1).translate(new Vector3f(0f, .05f, 0f));
+		if(InputHelper.isKeyDown(Keyboard.KEY_Q)) meshes.get(1).translate(new Vector3f(0f, 0f, .15f));
 		
-		if(InputHelper.isKeyDown(Keyboard.KEY_DOWN)) meshes.get(1).translate(new Vector3f(0f, -.05f, 0f));
+		if(InputHelper.isKeyDown(Keyboard.KEY_E)) meshes.get(1).translate(new Vector3f(0f, 0f, -.15f));
+		
+		if(InputHelper.isKeyDown(Keyboard.KEY_UP)) meshes.get(1).translate(new Vector3f(0f, .15f, 0f));
+		
+		if(InputHelper.isKeyDown(Keyboard.KEY_DOWN)) meshes.get(1).translate(new Vector3f(0f, -.15f, 0f));
+		
+		if(InputHelper.isKeyDown(Keyboard.KEY_LEFT)) meshes.get(1).translate(new Vector3f(.15f, 0f, 0f));
+		
+		if(InputHelper.isKeyDown(Keyboard.KEY_RIGHT)) meshes.get(1).translate(new Vector3f(-.15f, 0f, 0f));
 		
 		if(InputHelper.isKeyDown(Keyboard.KEY_R)) meshes.get(1).rotate(new Vector3f(0f, 1f, 0f));
 	}

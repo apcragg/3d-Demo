@@ -10,18 +10,22 @@ public class ShadowSpotLight extends SpotLight
 {
 	private static int updateCounter0 = 0;
 	private ShadowMapFBO lightMap;
+	private float fov;
 	
 	public ShadowSpotLight(Vector3f pos, Vector3f color, Vector3f direction, float angle, float intensity)
 	{
 		super(pos, color, direction, angle, intensity);
 		
-		lightMap = new ShadowMapFBO(2048, 2048);
+		lightMap = new ShadowMapFBO(3072, 3072);
+		fov = 180 * (1 - angle);
 	}
 	
 	public void lightSpaceUpdate()
 	{
+		System.out.println(fov);
+		Transform.setupPerspective((int) fov, 1000f);
 		Transform.lightOrthoMatrix = Transform.perspectiveMatrix();//Transform.orthographicSpace(-10,10,-10, 10, -10,20);
-		Transform.lightViewMatrix = Transform.lightViewSpace(pos, direction);
+		Transform.lightViewMatrix = Transform.lightViewSpace(pos.add(pos.mul(.2f)), direction);
 		//Transform.lightViewMatrix = Transform.lightViewSpace(Camera.getPos(), Camera.getForward());
 		
 	}

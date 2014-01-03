@@ -173,7 +173,7 @@ vec4 pointLightsLoop()
 	return clamp(totalLight, 0f, 1f);
 }
 
-vec4 calculateSpotLights(SpotLight s, float visibility)
+vec4 calculateSpotLights(SpotLight s, vec2 visibility)
 {
 	visibility = clamp(visibility, 0f, 1f);
 
@@ -182,9 +182,9 @@ vec4 calculateSpotLights(SpotLight s, float visibility)
 	
 	if((spotFactor > s.angle))
 	{
-		totalLight +=  (calculateLight(s.base, s.direction, 0) / length(world_pos - s.position)) 
-						* (1.0 - (1.0 - spotFactor)/(1.0 - s.angle)) * visibility;
-		totalSpec += (calculateSpecular(s.base, s.direction).xyz * (1.0 - (1.0 - spotFactor)/(1.0 - s.angle)) * vec3(1f, 1f, 1f)) * visibility;
+		totalLight +=  ((calculateLight(s.base, s.direction, 0) / length(world_pos - s.position)) 
+						* (1.0 - (1.0 - spotFactor)/(1.0 - s.angle)) * visibility.x);
+		totalSpec += (calculateSpecular(s.base, s.direction).xyz * (1.0 - (1.0 - spotFactor)/(1.0 - s.angle)) * vec3(1f, 1f, 1f)) * visibility.y;
 	}
 	
 	return totalLight;
@@ -196,7 +196,7 @@ vec4 spotLightLoop()
 	
 	for(int i = -1; i  < slNum; i++)
 	{
-		totalLight += calculateSpotLights(spotLights[i], 1);
+		totalLight += calculateSpotLights(spotLights[i], vec2(1));
 	}
 	
 	return totalLight;
@@ -245,13 +245,10 @@ float shadowLookup(int samp, vec2 shadowUV, float z)
 
 vec4 calculateShadows(SpotLight s, int i)
 {
-	// faux boolean
-	int continueLoop = 1;
-
-	float visibility = 1.0;
+	vec2 visibility = vec2(1.0f);
 	
 	float cosTheta = clamp(dot(object_normal, normalize(-s.direction)), 0f, 1f);
-	float bias = .00025f * tan(acos(cosTheta));
+	float bias = .0001f;// * tan(acos(cosTheta));
 	
 	bias = clamp(bias, 0.0f, 0.01f);
 	
@@ -259,19 +256,20 @@ vec4 calculateShadows(SpotLight s, int i)
 	float z  = (shadowCoord[i].z - bias) / shadowCoord[i].w;
 	
 	//if the texel is outside the shadowmap's view don't cast a shadow and early exit
-	vec2 uvTest = uvCoord / shadowCoord[i].w;
-	if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) continueLoop = 0;
+	//vec2 uvTest = uvCoord / shadowCoord[i].w;
+	//if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) calculateSpotLights(s, 1.0f); 
 	
-	int samples = 8;	
-	for(int j = -1; j < samples && continueLoop == 1; j++)
+	for(int j = -1; j < 8; j++)
 	{			
-		int index = int(samples*random(floor(world_pos.xyz*1000.0), j))%samples;
+		int index = int(8*random(floor(world_pos.xyz*1000.0), j))%8;
 	
 		float factor = shadowLookup(i, (uvCoord + (poissonDisk[index]/14f)), z);
 		
-		visibility -= factor * (1f / samples);
+		visibility.x -= factor * (1f / 8) * .85;
+		visibility.y -= factor * (1f / 8);
 	}	
-		return calculateSpotLights(s, visibility);
+		
+	return calculateSpotLights(s, visibility);
 }
 
 vec4 shadowSpotLightLoop()
@@ -279,9 +277,7 @@ vec4 shadowSpotLightLoop()
 	vec4 totalLight = vec4(0f, 0f, 0f, 1f);
 	
 	for(int i = -1; i  < s2Num_; i++)
-	{
 		totalLight += calculateShadows(shadowSpotLights[i], i);
-	}
 	
 	return totalLight;
 }

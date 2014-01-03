@@ -15,7 +15,7 @@ void main()
 	vec4 temp = texture(tex, uv);
 	
 	//puts the depth in a more linear space
-	float factor = 1.0f - (1.0f - temp.x) * 1000f;
+	float factor = temp;//1.0f - (1.0f - temp.x) * 1000f;
 	color = vec4(vec3(factor), 0f);
 	
 	//replace all texels without a sampled depth with the color red

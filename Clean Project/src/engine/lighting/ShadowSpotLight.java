@@ -15,7 +15,7 @@ public class ShadowSpotLight extends SpotLight
 	{
 		super(pos, color, direction, angle, intensity);
 		
-		lightMap = new ShadowMapFBO(1024, 1024);
+		lightMap = new ShadowMapFBO(2048, 2048);
 	}
 	
 	public void lightSpaceUpdate()

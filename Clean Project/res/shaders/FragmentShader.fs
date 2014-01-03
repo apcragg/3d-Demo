@@ -58,7 +58,7 @@ uniform int slNum;
 uniform sampler2D diffuseTex;
 uniform sampler2D normalTex;
 uniform sampler2D parallaxTex;
-uniform sampler2D shadowTex[MAX_SHADOW_SPOT_LIGHTS];
+uniform sampler2DShadow shadowTex[MAX_SHADOW_SPOT_LIGHTS];
 uniform float textureScale;
 uniform int parallaxMapping;
 
@@ -236,24 +236,11 @@ void calculateParallax()
 }
 
 float shadowLookup(int samp, vec2 shadowUV, float z)
-{
-	float factor = 0.0f;
-	float x,y;
-	int count = 0;
-	
-	for (y = -1.5; y <= 1.5; y += 1.0)
-		for (x = -1.5; x <= 1.5; x += 1.0)
-			{
-				vec2 offset = ((vec2(x,y) * (64f/1024f)) + shadowUV) / shadowCoord[samp].w;
-				
-				offset.x = clamp(offset.x, 0.01f, 0.99f);
-				offset.y = clamp(offset.y, 0.01f, 0.99f);
-				
-				factor += texture(shadowTex[samp], offset).x < z ? 1 : 0;
-				count++;
-			}
-			
-	return (factor / count);
+{		
+	shadowUV /= shadowCoord[samp].w	;
+	shadowUV = clamp(shadowUV, 0.001f, .999f);
+
+	return (1.0f - texture(shadowTex[samp], vec3(shadowUV, z - .000001)));
 }
 
 vec4 calculateShadows(SpotLight s, int i)
@@ -264,7 +251,7 @@ vec4 calculateShadows(SpotLight s, int i)
 	float visibility = 1.0;
 	
 	float cosTheta = clamp(dot(object_normal, normalize(-s.direction)), 0f, 1f);
-	float bias = .0005f * tan(acos(cosTheta));
+	float bias = .00025f * tan(acos(cosTheta));
 	
 	bias = clamp(bias, 0.0f, 0.01f);
 	
@@ -275,13 +262,13 @@ vec4 calculateShadows(SpotLight s, int i)
 	vec2 uvTest = uvCoord / shadowCoord[i].w;
 	if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) continueLoop = 0;
 	
-	int samples = 4;	
+	int samples = 8;	
 	for(int j = -1; j < samples && continueLoop == 1; j++)
 	{			
 		int index = int(samples*random(floor(world_pos.xyz*1000.0), j))%samples;
 	
-		//PCF filtering (sort of)
 		float factor = shadowLookup(i, (uvCoord + (poissonDisk[index]/14f)), z);
+		
 		visibility -= factor * (1f / samples);
 	}	
 		return calculateSpotLights(s, visibility);
@@ -320,7 +307,7 @@ void main()
 	vec4 fogColor 			= calculateFog();
 	
 	//final color addition
- 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + shadowSpotLightColor + fogColor;
+ 	color =  color + lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + shadowSpotLightColor + fogColor;
 	
 	//gamma
 	color.x = pow(color.x, 1f/1.8f);

@@ -48,8 +48,8 @@ public class ShadowLevel extends Level
 		
 		lights.addLight(new AmbientLight(.05f, Light.WHITE_LIGHT));
 		lights.addLight(new ShadowSpotLight(new Vector3f(-50f, 56f, 0f), new Vector3f(1f, .47f, 1f), new Vector3f(1f, -.7f, 0f), .4f, 25f));
-		//lights.addLight(new ShadowSpotLight(new Vector3f(50f, 76f, 50f), new Vector3f(1f, 1f, 1f), new Vector3f(-1f, -.75f, -1f), .4f, 25f));
-		//lights.addLight(new ShadowSpotLight(new Vector3f(0f, 96f, -50f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 25f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(50f, 76f, 50f), new Vector3f(1f, 1f, 1f), new Vector3f(-1f, -.75f, -1f), .4f, 25f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(0f, 96f, -50f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 25f));
 		
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
@@ -75,7 +75,7 @@ public class ShadowLevel extends Level
 	{
 		shadowPass();
 		renderPass();
-		RenderHelper.renderQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getD_texture());
+		RenderHelper.renderQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
 	}
 	
 	private void shadowPass()

@@ -6,5 +6,6 @@ layout(location = 0) out vec3 color;
 void main()
 {
 	//sets the color texture to the linearized (not a real word) depth
-	color = vec3(1.0f - (1.0f - gl_FragCoord.z) * 1000f);
+	color = vec3(gl_FragCoord.z);
+	gl_FragDepth = gl_FragCoord.z;
 }

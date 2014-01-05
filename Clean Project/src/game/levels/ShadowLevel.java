@@ -12,9 +12,9 @@ import engine.lighting.LightingHandler;
 import engine.lighting.PointLight;
 import engine.lighting.ShadowMapFBO;
 import engine.lighting.ShadowSpotLight;
-import engine.lighting.SpotLight;
 import engine.main.Game;
 import engine.main.Main;
+import engine.materials.Material;
 import engine.materials.Texture;
 import engine.math.Matrix4f;
 import engine.math.Transform;
@@ -46,10 +46,17 @@ public class ShadowLevel extends Level
 	{
 		RenderHelper.setBackfaceCulling(false);
 		
-		lights.addLight(new AmbientLight(.02f, Light.WHITE_LIGHT));
-	//	lights.addLight(new ShadowSpotLight(new Vector3f(-50f, 56f, 0f), new Vector3f(1f, .47f, 1f), new Vector3f(1f, -.7f, 0f), .4f, 15f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(50f, 66f, 50f), new Vector3f(1f, 1f, 1f), new Vector3f(-1f, -.75f, -1f), .4f, 15f));
-		//lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -50f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 15f));
+		lights.addLight(new AmbientLight(.01f, Light.WHITE_LIGHT));
+		//lights.addLight(new ShadowSpotLight(new Vector3f(-80f, 68f, 0f), new Vector3f(1f, .894f, .807f), new Vector3f(1f, -.65f, 0f), .4f, 35f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(90f, 68f, 80f), new Vector3f(1f, .89f, .89f), new Vector3f(-1f, -.65f, -1f), .45f, 35f));
+		//lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -50f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 35f));
+		
+		//starting point
+		Camera.setPos(new Vector3f(70f, 56f, 60f));
+		
+		Material building = new Material("buildingMtl");
+		building.setTexture(0, new Texture("buildingTex_COLOR.png").getTextureID());
+		building.setTexture(1, new Texture("buildingTex_NRM.png").getTextureID());
 		
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
@@ -62,22 +69,31 @@ public class ShadowLevel extends Level
 		meshes.add(floor);
 		
 		StandardMesh object0 = new StandardMesh();
-		object0.addVertices(ObjectLoader.loadOBJ("/res/OBJ/suzanne.obj"));
-		object0.setMaterial("default");
+		object0.addVertices(ObjectLoader.loadOBJ("/res/OBJ/pyro0.obj"));
+		object0.setMaterial("Material__10");
 		object0.formMesh();
-		object0.setTranslation(new Vector3f(0f, 26f, 0f));
-		object0.setRotation(new Vector3f(90f, 0f, 0f));
-		object0.setScale(6f);
+		object0.setTranslation(new Vector3f(0f, 38f, 0f));
+		object0.setRotation(new Vector3f(0f, 0f, 0f));
+		object0.setScale(1f);
 		meshes.add(object0);	
 		
 		StandardMesh object1 = new StandardMesh();
-		object1.addVertices(ObjectLoader.loadOBJ("/res/OBJ/suzanne.obj"));
-		object1.setMaterial("default");
+		object1.addVertices(ObjectLoader.loadOBJ("/res/OBJ/building.obj"));
+		object1.setMaterial("buildingMtl");
 		object1.formMesh();
-		object1.setTranslation(new Vector3f(23f, 26f, 5f));
-		object1.setRotation(new Vector3f(90f, 0f, 0f));
-		object1.setScale(6f);
+		object1.setTranslation(new Vector3f(15f, 1f + meshes.get(0).getHeight() * 2, -25f));
+		object1.setRotation(new Vector3f(0f, 0f, 0f));
+		object1.setScale(.75f);
 		meshes.add(object1);	
+		
+		StandardMesh object2 = new StandardMesh();
+		object2.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		object2.setMaterial("buildingMtl");
+		object2.formMesh();
+		object2.setTranslation(new Vector3f(15f, 1f + meshes.get(0).getHeight() * 2, -25f));
+		object2.setRotation(new Vector3f(0f, 0f, 0f));
+		object2.setScale(3f);
+		//meshes.add(object2);	
 	}
 	
 	public void render()
@@ -135,7 +151,7 @@ public class ShadowLevel extends Level
 	}
 
 	public void update()
-	{
+	{		
 		updateInput();
 		lights.update();
 		for(StandardMesh m : meshes) m.update();	
@@ -164,7 +180,7 @@ public class ShadowLevel extends Level
 		
 		if(InputHelper.isKeyDown(Keyboard.KEY_RIGHT)) meshes.get(1).translate(new Vector3f(-.15f, 0f, 0f));
 		
-		if(InputHelper.isKeyDown(Keyboard.KEY_R)) meshes.get(1).rotate(new Vector3f(0f, 1f, 0f));
+		if(!InputHelper.isKeyDown(Keyboard.KEY_R)) meshes.get(1).rotate(new Vector3f(0f, 1f, 0f));
 	}
 	
 	private void deployLight()

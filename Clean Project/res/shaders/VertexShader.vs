@@ -87,7 +87,7 @@ void main()
 	//puts the normals into world space
 	object_normal = normalize(worldSpace * vec4(normal, 0.0f)).xyz;
 	
-	gl_Position =  (projectedSpace * viewSpace * vec4(world_pos, 1f));
+	gl_Position =  ((projectedSpace * viewSpace) * vec4(world_pos, 1f));
 
 	tbnMatrix = calculateTBN();	
 	camera_Pos = cameraPos;

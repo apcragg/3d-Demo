@@ -1,6 +1,7 @@
 package engine.lighting;
 
 import engine.main.Game;
+import engine.math.Matrix4f;
 import engine.math.Transform;
 import engine.math.Vector3f;
 import engine.renderer.Camera;
@@ -22,10 +23,10 @@ public class ShadowSpotLight extends SpotLight
 	
 	public void lightSpaceUpdate()
 	{
-		System.out.println(fov);
 		Transform.setupPerspective((int) fov, 1000f);
-		Transform.lightOrthoMatrix = Transform.perspectiveMatrix();//Transform.orthographicSpace(-10,10,-10, 10, -10,20);
-		Transform.lightViewMatrix = Transform.lightViewSpace(pos.add(pos.mul(.2f)), direction);
+		Transform.lightOrthoMatrix = Transform.perspectiveMatrix();
+		Transform.lightOrthoMatrix = Transform.orthographicSpace(-75, 75, -75, 75, -75, 75);
+		Transform.lightViewMatrix = Transform.lightViewSpace(pos, direction);
 		//Transform.lightViewMatrix = Transform.lightViewSpace(Camera.getPos(), Camera.getForward());
 		
 	}

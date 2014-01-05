@@ -30,7 +30,7 @@ public class ObjectLoader
 
 		// ro
 		Matrix4f fixMatrix = new Matrix4f().arbitraryAxisRotate(new Vector3f(1f, 0f, 0f), 270);
-
+		
 		try
 		{
 			file = new Scanner(new FileReader(new File(System.getProperty("user.dir")
@@ -105,7 +105,7 @@ public class ObjectLoader
 
 				if (line.startsWith("f"))
 				{
-					Pattern regex = Pattern.compile("(\\d+)(?:(?:\\r|\\n)|(?:\\/|\\s))");
+					Pattern regex = Pattern.compile("(\\d+)(?:(?:\\r|\\n)|(?:\\/|\\s|\\/\\/))");
 					Matcher match = regex.matcher(line);
 
 					int[] faces = new int[(uv && normal ? 9 : uv || normal ? 6
@@ -134,11 +134,11 @@ public class ObjectLoader
 				}
 
 				// loads the material file which should be located in /res/mtl
-				if (line.startsWith("mtlib"))
+				if (RegexHelper.find(("mtllib"), line))
 				{
-					Matcher match = RegexHelper.getRegex("mtlib (.*)", line);
+					Matcher match = RegexHelper.getRegex("mtllib (.*)", line);
 
-					MaterialLoader.loadMaterial(match.group(1));
+					MaterialLoader.loadMaterial("/res/mtl/" + match.group(1));
 				}
 
 			}

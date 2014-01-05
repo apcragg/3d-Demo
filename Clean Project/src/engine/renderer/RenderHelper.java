@@ -56,6 +56,8 @@ public class RenderHelper
 	
 	public static void renderQuad(int textureId)
 	{
+		RenderHelper.setBackfaceCulling(false);
+		
 		Game.setShader(Game.QUAD);
 		
 		GL13.glActiveTexture(GL13.GL_TEXTURE4);

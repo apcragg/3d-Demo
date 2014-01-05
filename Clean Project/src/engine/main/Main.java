@@ -20,7 +20,7 @@ public class Main
 
 	public Main()
 	{
-		window = new Window(720, 16 / 9f);
+		window = new Window(1080, 16 / 9f);
 		game = new Game();
 		startLoop();
 

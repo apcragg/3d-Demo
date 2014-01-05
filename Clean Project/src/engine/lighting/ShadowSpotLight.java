@@ -17,19 +17,25 @@ public class ShadowSpotLight extends SpotLight
 	{
 		super(pos, color, direction, angle, intensity);
 		
-		lightMap = new ShadowMapFBO(3072, 3072);
+		lightMap = new ShadowMapFBO(3076, 3076);
 		fov = 180 * (1 - angle);
 	}
 	
+	/**
+	 * Sets up the orthographic matrix and lightViewSpace matrix for use in the Transform class
+	 */
+	
 	public void lightSpaceUpdate()
 	{
-		Transform.setupPerspective((int) fov, 1000f);
-		Transform.lightOrthoMatrix = Transform.perspectiveMatrix();
-		Transform.lightOrthoMatrix = Transform.orthographicSpace(-75, 75, -75, 75, -75, 75);
+		//Transform.setupPerspective((int) fov, 1000f);
+		//Transform.lightOrthoMatrix = Transform.perspectiveMatrix();
+		Transform.lightOrthoMatrix = Transform.orthographicSpace(-175, 175, -100, 100, -150, 150);
 		Transform.lightViewMatrix = Transform.lightViewSpace(pos, direction);
-		//Transform.lightViewMatrix = Transform.lightViewSpace(Camera.getPos(), Camera.getForward());
-		
 	}
+	
+	/**
+	 * Updates the uniform values for each shadow casting light
+	 */
 	
 	public void update()
 	{		
@@ -44,6 +50,10 @@ public class ShadowSpotLight extends SpotLight
 			updateCounter0++;
 		}
 	}
+	
+	/**
+	 * Resets the update counter. Should be called after all the ShadowSpotLights have been updated each frame.
+	 */
 	
 	public static void reset()
 	{

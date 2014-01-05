@@ -75,7 +75,7 @@ vec2 uvCoords = object_uvs / textureScale;
 vec3 totalSpec = vec3(0f, 0f, 0f);
 vec3 normal;
 float attenuation = 1f;
-float fogFalloff = 150f;
+float fogFalloff = 200f;
 
 //shadow mapping
 const vec2 poissonDisk[] = vec2[](
@@ -237,10 +237,27 @@ void calculateParallax()
 
 float shadowLookup(int samp, vec2 shadowUV, float z)
 {		
-	shadowUV /= shadowCoord[samp].w	;
-	shadowUV = clamp(shadowUV, 0.001f, .999f);
-
-	return (1.0f - texture(shadowTex[samp], vec3(shadowUV, z - .000001)));
+	//shadowUV /= shadowCoord[samp].w; //only use for perspective shadow maps
+	shadowUV = clamp(shadowUV, 0.0001f, .9999f);
+	vec2 offset;
+	float factor = 0.0f;
+	
+	int count = 0;
+	
+	for(float x = -1.5f; x <= 1.5f; x += 1.0f)
+	{
+		for(float y = -1.5f; y <= 1.5f; y += 1.0f)
+		{
+			offset.x = (1f/3076) * x;
+			offset.y = (1f/3076) * y;
+			
+			factor += (1.0f - texture(shadowTex[samp], vec3(shadowUV + offset, z - .001f)));
+			
+			count ++;
+		}
+	}
+	
+	return factor / count;
 }
 
 vec4 calculateShadows(SpotLight s, int i)
@@ -248,27 +265,45 @@ vec4 calculateShadows(SpotLight s, int i)
 	vec2 visibility = vec2(1.0f);
 	
 	float cosTheta = clamp(dot(normal, normalize(-s.direction)), 0f, 1f);
-		if(cosTheta < 0.025f) return calculateSpotLights(s, vec2(0.15f, 0.0f));
+		if(cosTheta < 0.025f) return calculateSpotLights(s, vec2(0.05f, 0.0f));
 		
-	float bias = .0001f;// * tan(acos(cosTheta));	
+	float bias = .0001f * tan(acos(cosTheta));	
 	bias = clamp(bias, 0.0f, 0.01f);
 	
 	vec2 uvCoord = shadowCoord[i].xy;
-	float z  = (shadowCoord[i].z - bias) / shadowCoord[i].w;
+	float z  = (shadowCoord[i].z - bias);// / shadowCoord[i].w;
 	
 	//if the texel is outside the shadowmap's view don't cast a shadow and early exit
-	//vec2 uvTest = uvCoord / shadowCoord[i].w;
-	//if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) calculateSpotLights(s, 1.0f); 
+	vec2 uvTest = uvCoord;
+	if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) calculateSpotLights(s, vec2(1.0f, 1.0f)); 
 	
-	for(int j = -1; j < 8; j++)
+	/*
+	*Old code that might still be useful later.
+	
+	int sCount = 0;
+	int lCount = 0;
+	
+	/for(int j = 0; j < 8; j++)
 	{			
 		int index = int(8*random(floor(world_pos.xyz*1000.0), j))%8;
 	
-		float factor = shadowLookup(i, (uvCoord + (poissonDisk[index]/14f)), z);
+		float factor = shadowLookup(i, (uvCoord + (poissonDisk[index]/1400f)), z);
 		
-		visibility.x -= factor * (1f / 8) * .85;
+		if(factor == 1.0f) sCount++; if(sCount == 2 && j == 1){ return calculateSpotLights(s, vec2(.15f, 0f)); }
+		if(factor == 0.0f) lCount++; if(lCount == 2 && j == 1){ return calculateSpotLights(s, vec2(1.0f, 1.0f)); } 
+	
+		visibility.x -= factor * (1f / 8) * .95;
 		visibility.y -= factor * (1f / 8);
 	}	
+	
+	* End old code
+	*/
+	
+	//early returns
+	
+	float factor = shadowLookup(i, uvCoord, z);
+	visibility.x -= factor * .95;
+	visibility.y -= factor;
 		
 	return calculateSpotLights(s, visibility);
 }

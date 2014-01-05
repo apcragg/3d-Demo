@@ -29,6 +29,7 @@ public class Window
 			Display.setDisplayMode(new DisplayMode(HEIGHT, WIDTH));
 			Display.setTitle(Window.title);
 			Display.create();
+			Display.setFullscreen(true);
 			// Display.setVSyncEnabled(true);
 		}
 		catch (LWJGLException e)

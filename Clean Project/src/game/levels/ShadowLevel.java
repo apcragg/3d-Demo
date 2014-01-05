@@ -44,7 +44,7 @@ public class ShadowLevel extends Level
 	
 	private void setup()
 	{
-		RenderHelper.setBackfaceCulling(false);
+		RenderHelper.setBackfaceCulling(true);
 		
 		lights.addLight(new AmbientLight(.01f, Light.WHITE_LIGHT));
 		//lights.addLight(new ShadowSpotLight(new Vector3f(-80f, 68f, 0f), new Vector3f(1f, .894f, .807f), new Vector3f(1f, -.65f, 0f), .4f, 35f));
@@ -61,7 +61,7 @@ public class ShadowLevel extends Level
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
 		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/floor.obj"));
-		floor.setMaterial("metalMtl");
+		floor.setMaterial("groundMtl");
 		floor.formMesh();
 		floor.setTranslation(new Vector3f());
 		floor.setScale(2f);
@@ -94,6 +94,16 @@ public class ShadowLevel extends Level
 		object2.setRotation(new Vector3f(0f, 0f, 0f));
 		object2.setScale(3f);
 		//meshes.add(object2);	
+		
+		StandardMesh object3 = new StandardMesh();
+		object3.addVertices(ObjectLoader.loadOBJ("/res/OBJ/dispGround.obj"));
+		object3.setMaterial("metalMtl");
+		object3.setTranslation(new Vector3f(35f, 25.5f, 35f));
+		object3.setTextureScale(.25f);
+		object3.formMesh();
+		object3.setScale(.35f);
+		object3.setRotation(new Vector3f(90f, 0f, 0f));
+		meshes.add(object3);
 	}
 	
 	public void render()
@@ -105,6 +115,8 @@ public class ShadowLevel extends Level
 	
 	private void shadowPass()
 	{
+		RenderHelper.setBackfaceCulling(true);
+		
 		for(Light l :  lights.getShadowSpotLights())
 		{
 			ShadowSpotLight light = ((ShadowSpotLight) l);
@@ -123,6 +135,8 @@ public class ShadowLevel extends Level
 	
 	private void renderPass()
 	{
+		RenderHelper.setBackfaceCulling(true);
+		
 		//pre-render
 		RenderHelper.clear();
 		

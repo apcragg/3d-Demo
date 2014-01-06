@@ -251,7 +251,7 @@ float shadowLookup(int samp, vec2 shadowUV, float z)
 			offset.x = (1f/3076) * x;
 			offset.y = (1f/3076) * y;
 			
-			factor += (1.0f - texture(shadowTex[samp], vec3(shadowUV + offset, z - .001f)));
+			factor += (1.0f - texture(shadowTex[samp], vec3(shadowUV + offset, z - .0005f)));
 			
 			count ++;
 		}
@@ -267,7 +267,7 @@ vec4 calculateShadows(SpotLight s, int i)
 	float cosTheta = clamp(dot(normal, normalize(-s.direction)), 0f, 1f);
 		if(cosTheta < 0.025f) return calculateSpotLights(s, vec2(0.05f, 0.0f));
 		
-	float bias = .0001f * tan(acos(cosTheta));	
+	float bias = .0005f * tan(acos(cosTheta));	
 	bias = clamp(bias, 0.0f, 0.01f);
 	
 	vec2 uvCoord = shadowCoord[i].xy;
@@ -342,8 +342,8 @@ void main()
  	color =  color + lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + shadowSpotLightColor + fogColor + ambientColor;
 	
 	//gamma
-	color.x = pow(color.x, 1f/1.8f);
-	color.y = pow(color.y, 1f/1.8f);
-	color.z = pow(color.z, 1f/1.8f);
+	color.x = pow(color.x, 1f/1.5f);
+	color.y = pow(color.y, 1f/1.5f);
+	color.z = pow(color.z, 1f/1.5f);
 }
 

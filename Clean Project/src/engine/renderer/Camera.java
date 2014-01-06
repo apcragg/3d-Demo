@@ -18,13 +18,17 @@ public class Camera
 	private static Vector3f up;
 	private static Vector3f pos;
 	private static float sensitivity;
+	private static float smoothing;
+	private static float smoothBias;
 	private static Vector3f rotation;
 
 	public Camera()
 	{
 		pos = new Vector3f();
 		forward = new Vector3f(0f, 0f, -1f);
-		sensitivity = .6f;
+		sensitivity = 1.5f;
+		smoothing = 1.3f;
+		smoothBias = 4f;
 		up = yAxis;
 		rotation = new Vector3f();
 	}
@@ -64,9 +68,12 @@ public class Camera
 	}
 
 	private static void updateMouse()
-	{
-		float dx = Mouse.getDX();
-		float dy = -Mouse.getDY();
+	{		
+		float dx = Mouse.getDX() / smoothBias;
+		float dy = -Mouse.getDY() / smoothBias;
+		
+		dx = (dx < 0 ? -1 : 1) * ((float) Math.pow(Math.abs(dx),  smoothing) < 25f ? (float) Math.pow(Math.abs(dx),  smoothing) : 25f);
+		dy = (dy < 0 ? -1 : 1) * ((float) Math.pow(Math.abs(dy),  smoothing) < 25f ? (float) Math.pow(Math.abs(dy),  smoothing) : 25f);
 
 		rotation = rotation.add(new Vector3f(0f, dx * sensitivity, 0f));
 		rotation = rotation.add(new Vector3f(dy * sensitivity, 0f, 0f));

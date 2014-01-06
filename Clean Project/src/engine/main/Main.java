@@ -20,7 +20,7 @@ public class Main
 
 	public Main()
 	{
-		window = new Window(1080, 16 / 9f);
+		window = new Window(720, 16 / 9f);
 		game = new Game();
 		startLoop();
 
@@ -47,7 +47,7 @@ public class Main
 
 			game.render();
 			Display.update();
-			//Display.sync(120);
+			// Display.sync(120);
 
 			frameTime += Time.getTime() - currentTime;
 			frameCount++;

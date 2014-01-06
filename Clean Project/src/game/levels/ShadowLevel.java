@@ -47,9 +47,9 @@ public class ShadowLevel extends Level
 		RenderHelper.setBackfaceCulling(true);
 		
 		lights.addLight(new AmbientLight(.01f, Light.WHITE_LIGHT));
-		//lights.addLight(new ShadowSpotLight(new Vector3f(-80f, 68f, 0f), new Vector3f(1f, .894f, .807f), new Vector3f(1f, -.65f, 0f), .4f, 35f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(90f, 68f, 80f), new Vector3f(1f, .89f, .89f), new Vector3f(-1f, -.65f, -1f), .45f, 35f));
-		//lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -50f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 35f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(-80f, 68f, 0f), new Vector3f(1f, .894f, .807f), new Vector3f(1f, -.65f, 0f), .4f, 35f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(90f, 68f, 80f), new Vector3f(1f, .89f, .89f), new Vector3f(-1f, -.65f, -1f), .4f, 35f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -80f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 35f));
 		
 		//starting point
 		Camera.setPos(new Vector3f(70f, 56f, 60f));

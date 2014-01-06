@@ -70,6 +70,7 @@ uniform vec3 specColor;
 
 //Camera uniforms
 in vec3 camera_Pos;
+uniform float gamma;
 
 vec2 uvCoords = object_uvs / textureScale;
 vec3 totalSpec = vec3(0f, 0f, 0f);
@@ -342,8 +343,8 @@ void main()
  	color =  color + lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + shadowSpotLightColor + fogColor + ambientColor;
 	
 	//gamma
-	color.x = pow(color.x, 1f/1.5f);
-	color.y = pow(color.y, 1f/1.5f);
-	color.z = pow(color.z, 1f/1.5f);
+	color.x = pow(color.x, 1f/gamma);
+	color.y = pow(color.y, 1f/gamma);
+	color.z = pow(color.z, 1f/gamma);
 }
 

@@ -21,16 +21,25 @@ public class Camera
 	private static float smoothing;
 	private static float smoothBias;
 	private static Vector3f rotation;
+	
+	private static float gamma;
 
 	public Camera()
 	{
 		pos = new Vector3f();
-		forward = new Vector3f(0f, 0f, -1f);
-		sensitivity = 1.5f;
-		smoothing = 1.3f;
-		smoothBias = 4f;
-		up = yAxis;
 		rotation = new Vector3f();
+		
+		setup();
+	}
+	
+	private void setup()
+	{
+		setSensitivity(1.5f);
+		setSmoothBias(4f);
+		setSmoothing(1.3f);
+		setUp(yAxis);
+		setForward(new Vector3f(0f, 0f, -1f));
+		setGamma(1.5f);
 	}
 
 	public static void rotateX(float amount)
@@ -54,6 +63,7 @@ public class Camera
 	public static void update()
 	{
 		Game.getShader().uniformData3f("cameraPos", pos);
+		Game.getShader().uniformData1f("gamma", gamma);
 
 		updateMouse();
 	}
@@ -62,7 +72,7 @@ public class Camera
 	{
 		forward.setX(0f);
 		forward.setY(0f);
-		forward.setZ(1f);
+		forward.setZ(-1f);
 
 		up = yAxis;
 	}
@@ -151,5 +161,45 @@ public class Camera
 	public static void setUp(Vector3f up)
 	{
 		Camera.up = up;
+	}
+
+	public static float getSensitivity()
+	{
+		return sensitivity;
+	}
+
+	public static void setSensitivity(float sensitivity)
+	{
+		Camera.sensitivity = sensitivity;
+	}
+
+	public static float getSmoothing()
+	{
+		return smoothing;
+	}
+
+	public static void setSmoothing(float smoothing)
+	{
+		Camera.smoothing = smoothing;
+	}
+
+	public static float getSmoothBias()
+	{
+		return smoothBias;
+	}
+
+	public static void setSmoothBias(float smoothBias)
+	{
+		Camera.smoothBias = smoothBias;
+	}
+
+	public static float getGamma()
+	{
+		return gamma;
+	}
+
+	public static void setGamma(float gamma)
+	{
+		Camera.gamma = gamma;
 	}
 }

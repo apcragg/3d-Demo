@@ -34,7 +34,14 @@ public class PhongShader extends ShaderBase
 		{
 			createUniform("lightSpace[" + i + "]");
 		}		
+		
+		/*
+		 * Camera Uniforms
+		 */
 
+		createUniform("cameraPos");
+		createUniform("gamma");
+		
 		/*
 		 * Lighting uniforms
 		 */
@@ -43,7 +50,6 @@ public class PhongShader extends ShaderBase
 		createUniform("mainLight.base.color");
 		createUniform("mainLight.base.intensity");
 		createUniform("mainLight.direction");
-		createUniform("cameraPos");
 
 		for (int i = 0; i < MAX_POINT_LIGHTS; i++)
 		{

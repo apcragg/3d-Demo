@@ -5,6 +5,7 @@ import engine.main.Window;
 
 import org.lwjgl.input.*;
 
+import engine.math.Transform;
 import engine.math.Vector2f;
 import engine.math.Vector3f;
 import engine.util.InputHelper;
@@ -79,8 +80,8 @@ public class Camera
 
 	private static void updateMouse()
 	{		
-		float dx = Mouse.getDX() / smoothBias;
-		float dy = -Mouse.getDY() / smoothBias;
+		float dx = Mouse.getDX() / (smoothBias * Transform.getMouseSmoothFactor());
+		float dy = -Mouse.getDY() / (smoothBias * Transform.getMouseSmoothFactor());
 		
 		dx = (dx < 0 ? -1 : 1) * ((float) Math.pow(Math.abs(dx),  smoothing) < 25f ? (float) Math.pow(Math.abs(dx),  smoothing) : 25f);
 		dy = (dy < 0 ? -1 : 1) * ((float) Math.pow(Math.abs(dy),  smoothing) < 25f ? (float) Math.pow(Math.abs(dy),  smoothing) : 25f);

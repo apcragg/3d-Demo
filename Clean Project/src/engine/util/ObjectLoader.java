@@ -55,10 +55,13 @@ public class ObjectLoader
 
 					for (int i = 0; i < 3 && match.find(); i++)
 					{
-						v.set(Float.valueOf(match.group(0)), i);
+						v.set(Float.valueOf(match.group(0)), (i));
 					}
+					
+					v.swapYZ();
 
-					positions.add(fixMatrix.mul(v));
+				//	positions.add(fixMatrix.mul(v));
+					positions.add(v);
 				}
 
 				// loads texture coords
@@ -93,8 +96,10 @@ public class ObjectLoader
 					{
 						v.set(Float.valueOf(match.group(0)), i);
 					}
+					
+					v.swapYZ();
 
-					normals.add(fixMatrix.mul(v));
+					normals.add(v);
 
 				}
 

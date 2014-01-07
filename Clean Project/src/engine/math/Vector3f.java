@@ -154,5 +154,12 @@ public class Vector3f
 	{
 		return new String("Vector3f: " + x + " " + y + " " + z);
 	}
+	
+	public void swapYZ()
+	{
+		float temp = this.y;
+		y = z;
+		z = temp;
+	}
 
 }

@@ -148,75 +148,75 @@ public class StandardMesh implements Mesh
 	
 	public float getRWidth()
 	{
-		float max = 0.0f;
+		float max = vertices.get(1).getX();
 
 		for (Vertex v : vertices)
 		{
 			max = max < v.getPosition().getX() ? v.getPosition().getX() : max;
 		}
 		
-		return Math.abs(max);
+		return Math.abs(max) * scale.getX();
 	}
 	
 	public float getLWidth()
 	{
-		float max = 0.0f;
+		float max = vertices.get(1).getX();
 
 		for (Vertex v : vertices)
 		{
 			max = max > v.getPosition().getX() ? v.getPosition().getX() : max;
 		}
 		
-		return Math.abs(max);
+		return Math.abs(max) * scale.getX();
 	}
 	
 	public float getHeight()
 	{
-		float max = 0.0f;
+		float max = vertices.get(1).getY();
 
 		for (Vertex v : vertices)
 		{
 			max = max < v.getPosition().getY() ? v.getPosition().getY() : max;
 		}
 		
-		return Math.abs(max);
+		return Math.abs(max) * scale.getY();
 	}
 	
 	public float getDepth()
 	{
-		float max = 0.0f;
+		float max = vertices.get(1).getY();
 
 		for (Vertex v : vertices)
 		{
 			max = max > v.getPosition().getY() ? v.getPosition().getY() : max;
 		}
 		
-		return Math.abs(max);
+		return Math.abs(max) * scale.getY();
 	}
 
 	
 	public float getNearDepth()
 	{
-		float max = 0.0f;
+		float max = vertices.get(1).getZ();
 
 		for (Vertex v : vertices)
 		{
 			max = max < v.getPosition().getZ() ? v.getPosition().getZ() : max;
 		}
 		
-		return Math.abs(max);
+		return Math.abs(max) * scale.getZ();
 	}
 	
 	public float getFarDepth()
 	{
-		float max = 0.0f;
+		float max = vertices.get(1).getZ();
 
 		for (Vertex v : vertices)
 		{
 			max = max > v.getPosition().getZ() ? v.getPosition().getZ() : max;
 		}
 		
-		return Math.abs(max);
+		return Math.abs(max) * scale.getZ();
 	}
 	
 	public float getAbsoluteWidth()
@@ -234,7 +234,7 @@ public class StandardMesh implements Mesh
 			min = min > v.getPosition().getX() ? v.getPosition().getX() : min;
 		}
 
-		return Math.abs(max - min);
+		return Math.abs(max - min) * scale.getX();
 	}
 
 	public float getAbsoluteDepth()
@@ -252,7 +252,7 @@ public class StandardMesh implements Mesh
 			min = min > v.getPosition().getZ() ? v.getPosition().getZ() : min;
 		}
 
-		return Math.abs(max - min);
+		return Math.abs(max - min) * scale.getY();
 	}
 
 	public float getAbsoluteHeight()
@@ -270,7 +270,7 @@ public class StandardMesh implements Mesh
 			min = min > v.getPosition().getY() ? v.getPosition().getY() : min;
 		}
 
-		return Math.abs(max - min);
+		return Math.abs(max - min) * scale.getZ();
 	}
 
 	/*

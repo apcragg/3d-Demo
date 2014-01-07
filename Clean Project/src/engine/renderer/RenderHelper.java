@@ -30,7 +30,7 @@ public class RenderHelper
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glEnable(GL_DEPTH_CLAMP);
 		glEnable(GL_CULL_FACE);
-		glFrontFace(GL_CW);
+		glFrontFace(GL_CCW);
 		
 		quad = new StandardMesh();
 		quad.addVertices(ObjectLoader.loadOBJ("/res/OBJ/plane.obj"));

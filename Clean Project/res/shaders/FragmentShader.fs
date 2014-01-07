@@ -129,7 +129,7 @@ vec4 calculateSpecular(BaseLight base, vec3 direction)
 
     //end specular
 	
-	return vec4(specColor * spec * specIntensity * attenuation * base.color * cosAI, 1f);
+	return vec4(specColor * spec * specIntensity * base.color * cosAI, 1f);
 }
 
 vec4 calculateLight(BaseLight base, vec3 direction, int spec)
@@ -224,14 +224,18 @@ void calculateNormals()
 	}
 }
 
+// some weird negative shit going on on here. Because of the way parallax mapping works it
+// doesn't like having it's texture flipped upside down without having too it's eye vec flipped. 
+// In turn this means the normal y component needs to be flipped as well.
+
 void calculateParallax()
 {
 	if(parallaxMapping == 1)
 	{
-		float heightSample = texture2D(parallaxTex, uvCoords.xy).x;		
-		float hsb = .05f * heightSample - 0.03f;
-		
-		uvCoords = uvCoords + (normalize(camera_Pos - world_pos) * tbnMatrix).xy * hsb ;
+		float heightSample = texture2D(parallaxTex, vec2(uvCoords.x, uvCoords.y)).x;                
+        float hsb = .05f * heightSample - 0.03f;
+                
+        uvCoords = vec2(uvCoords.x, uvCoords.y) + (tbnMatrix * normalize(camera_Pos - world_pos)).xy * hsb ;
 	}	
 	normalize(object_normal);
 }
@@ -322,7 +326,7 @@ vec4 shadowSpotLightLoop()
 void main()
 {
 	//pre comp fixes
-	uvCoords.y = -uvCoords.y;
+	if(!(parallaxMapping == 1)) uvCoords.y = -uvCoords.y;
 	normal = normalize(object_normal);
 	
 	//prepare normals and uvs from normal/parallax maps

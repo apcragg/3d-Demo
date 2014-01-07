@@ -7,6 +7,8 @@ public class Transform
 	private static Vector3f translation, rotation, scale;
 	private static float depth;
 	private static int fov;
+	private static int zoomFov = 20;
+	private static boolean zoom = false;
 	
 	public static Vector3f currentLight = new Vector3f();
 	public static Matrix4f lightOrthoMatrix = new Matrix4f().identity();
@@ -46,7 +48,7 @@ public class Transform
 
 	public static Matrix4f perspectiveMatrix()
 	{
-		Matrix4f perspective = new Matrix4f().identity().perspective(fov, .01f, depth);
+		Matrix4f perspective = new Matrix4f().identity().perspective(zoom ? zoomFov : fov, .01f, depth);
 
 		return perspective;
 	}
@@ -63,7 +65,7 @@ public class Transform
 		Matrix4f mTranslate = new Matrix4f().translate(translation);
 		Matrix4f mRotate = new Matrix4f().rotate(rotation);
 
-		return mTranslate.mul(mRotate.mul(mScale));
+		return mTranslate.mul(mScale.mul(mRotate));
 	}
 
 	/**
@@ -106,6 +108,31 @@ public class Transform
 	public static Matrix4f lightSpace()
 	{	
 		return lightOrthoMatrix.mul(lightViewMatrix);
+	}
+
+	public static int getZoomFov()
+	{
+		return zoomFov;
+	}
+
+	public static void setZoomFov(int zoomFov)
+	{
+		Transform.zoomFov = zoomFov;
+	}
+
+	public static boolean isZoom()
+	{
+		return zoom;
+	}
+
+	public static void setZoom(boolean zoom)
+	{
+		Transform.zoom = zoom;
+	}
+	
+	public static float getMouseSmoothFactor()
+	{
+		return zoom ? (fov / zoomFov) : 1.0f;
 	}
 
 }

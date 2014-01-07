@@ -12,9 +12,9 @@ public class PlayerSpotLight extends SpotLight
 {
 	private boolean isOn;
 
-	public PlayerSpotLight(Vector3f pos, Vector3f color, Vector3f direction, float angle, float intensity)
+	public PlayerSpotLight(Vector3f color, float angle, float intensity)
 	{
-		super(pos, color, direction, angle, intensity);
+		super(Camera.getPos(), color, Camera.getForward(), angle, intensity);
 
 		isOn = true;
 	}

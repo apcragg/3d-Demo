@@ -88,7 +88,7 @@ public class ShadowLevel extends Level
 		object1.formMesh();
 		object1.setScale(.75f);
 		object1.setRotation(new Vector3f(0f, 0f, 0f));
-		object1.setTranslation(new Vector3f(15f, .02f, -25f));	
+		object1.setTranslation(new Vector3f(15f, .15f, -25f));	
 		meshes.add(object1);	
 		
 		StandardMesh object2 = new StandardMesh();

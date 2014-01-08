@@ -21,8 +21,8 @@ public class ScreenQuadShader extends ShaderBase
 	
 	private void setup()
 	{
-		createUniform("text");		
-		uniformData1i("text", 0);
+		createUniform("tex");		
+		uniformData1i("tex", 0);
 	}
 
 	public int getProgramHandle()

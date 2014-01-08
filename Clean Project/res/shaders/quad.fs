@@ -14,7 +14,7 @@ void main()
 	vec2 uvCoord = vec2(1.0f - uv.x, 1.0f - uv.y);
 
 	//samples the texture
-	vec4 temp = texture(tex, uvCoord);
+	float temp = texture(tex, uvCoord).x;
 	
 	//puts the depth in a more linear space
 	float factor = temp;//1.0f - (1.0f - temp.x) * 1000f;

@@ -65,7 +65,7 @@ public class ShadowLevel extends Level
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
 		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/ground.obj"));
-		floor.setMaterial("metalMtl");
+		floor.setMaterial("groundMtl");
 		floor.formMesh();
 		floor.setScale(3f);
 		floor.setTranslation(new Vector3f(0f, -floor.getHeight(), 0f));
@@ -88,7 +88,7 @@ public class ShadowLevel extends Level
 		object1.formMesh();
 		object1.setScale(.75f);
 		object1.setRotation(new Vector3f(0f, 0f, 0f));
-		object1.setTranslation(new Vector3f(15f, 0f, -25f));	
+		object1.setTranslation(new Vector3f(15f, .02f, -25f));	
 		meshes.add(object1);	
 		
 		StandardMesh object2 = new StandardMesh();
@@ -102,7 +102,7 @@ public class ShadowLevel extends Level
 		
 		StandardMesh object3 = new StandardMesh();
 		object3.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
-		object3.setMaterial("metalMtl");
+		object3.setMaterial("brickMtl");
 		object3.setScale(5f);
 		object3.setTextureScale(.15f);
 		object3.setRotation(new Vector3f(-90f, 0f, 0f));

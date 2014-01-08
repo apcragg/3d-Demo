@@ -28,16 +28,13 @@ public class MaterialLoader
 
 				if (line.startsWith("newmtl"))
 				{
-					System.out.println(line);
 					material = new Material(RegexHelper.getRegex(".+\\s(.*)", line).group(1));
 				}
 
 				// loads the diffuse map from file
 
 				if (RegexHelper.find("\\s?map_Kd", line))
-				{
-					System.out.println(line);
-					
+				{					
 					String t_path = RegexHelper.getRegex("\\\\?([\\w|-|_]*)\\.", line).group(1);
 
 					String t_extension = RegexHelper.getRegex("(\\..*)", line).group(1);
@@ -57,8 +54,6 @@ public class MaterialLoader
 					String t_path = RegexHelper.getRegex("\\\\?([\\w|-|_|\\s]*)\\.", line).group(1);
 
 					String t_extension = RegexHelper.getRegex("(\\..*)", line).group(1);
-					
-					System.out.println(t_path + "  " + t_extension);
 
 					material.setTexture(1, new Texture(t_path + t_extension).getTexture().getTextureID());
 				}

@@ -185,6 +185,13 @@ public class Material
 
 	public static Material getMaterial(String name)
 	{
+		if(!Material.materials.containsKey(name))
+		{
+			LogHelper.printError("Material '" + name +"' does not exist.");
+			
+			Main.quit();
+		}
+		
 		return materials.get(name);
 	}
 

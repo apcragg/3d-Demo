@@ -52,12 +52,12 @@ public class MainLevel extends Level
 		lights = new LightingHandler();
 		meshes = new ArrayList<StandardMesh>();
 
-		basicModel = ObjectLoader.loadOBJ("/res/OBJ/light.obj");
+		basicModel = ObjectLoader.loadOBJ("/res/OBJ/sphere.obj");
 		shadowMap = new ShadowMapFBO(1024, 1024);
 		shadowMap.writeUnBind();
 
 		new Camera();
-		RenderHelper.setBackfaceCulling(false);
+		RenderHelper.setBackfaceCulling(true);
 
 		lights.addLight(new AmbientLight(.001f, new Vector3f(1f, 1f, 1f)));
 		// lights.addLight(new DirectionalLight(.7f, new Vector3f(1f, 1f, 1f),
@@ -87,7 +87,7 @@ public class MainLevel extends Level
 		metal.setDisplacementFactor(.025f);
 
 		StandardMesh teapot = new StandardMesh();
-		teapot.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		teapot.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
 		teapot.setScale(1.5f);
 		teapot.setTranslation(new Vector3f(0f, 15.725f, 0f)); // 5.725f
 		teapot.formMesh();
@@ -105,7 +105,7 @@ public class MainLevel extends Level
 		// Texture("weirdNormal.jpg").getTexture().getTextureID());
 
 		StandardMesh floor = new StandardMesh();
-		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/floor.obj"));
+		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/ground.obj"));
 		floor.setMaterial("stone");
 		floor.setTranslation(new Vector3f());
 		floor.setTextureScale(.25f);
@@ -126,7 +126,7 @@ public class MainLevel extends Level
 		stone.setSpecularExponenet(128);
 
 		StandardMesh ground = new StandardMesh();
-		ground.addVertices(ObjectLoader.loadOBJ("/res/OBJ/dispGround.obj"));
+		ground.addVertices(ObjectLoader.loadOBJ("/res/OBJ/ground.obj"));
 		ground.setMaterial("groundMtl");
 		ground.setTranslation(new Vector3f(35f, 7f, 35f));
 		ground.setTextureScale(1f);
@@ -135,7 +135,7 @@ public class MainLevel extends Level
 		meshes.add(ground);
 
 		StandardMesh metalObject = new StandardMesh();
-		metalObject.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		metalObject.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
 		metalObject.setMaterial("metalMtl");
 		metalObject.setTranslation(new Vector3f(-35f, 15f, -35f));
 		metalObject.setTextureScale(.35f);
@@ -212,7 +212,7 @@ public class MainLevel extends Level
 	{
 		StandardMesh whiteLight = new StandardMesh();
 		whiteLight.setMaterial("lightMaterial");
-		whiteLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		whiteLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
 		whiteLight.formMesh();
 		whiteLight.setScale(.5f);
 		Vector3f whitePos = new Vector3f(2f, 22f, 30f);
@@ -234,7 +234,7 @@ public class MainLevel extends Level
 
 		StandardMesh greenLight = new StandardMesh();
 		greenLight.setMaterial("lightMaterial");
-		greenLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		greenLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
 		greenLight.formMesh();
 		greenLight.setScale(.5f);
 		Vector3f greenPos = new Vector3f(40f, 26f, 10f);
@@ -245,7 +245,7 @@ public class MainLevel extends Level
 
 		StandardMesh pinkLight = new StandardMesh();
 		pinkLight.setMaterial("lightMaterial");
-		pinkLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/lightL.obj"));
+		pinkLight.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
 		pinkLight.formMesh();
 		pinkLight.setScale(.5f);
 		Vector3f pinkPos = new Vector3f(-30f, 26f, 12f);
@@ -259,7 +259,7 @@ public class MainLevel extends Level
 	{
 		StandardMesh light = new StandardMesh();
 		light.setMaterial("lightMaterial");
-		light.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		light.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
 		light.formMesh();
 		light.setScale(.5f);
 		Vector3f lightPos = new Vector3f(Camera.getPos());

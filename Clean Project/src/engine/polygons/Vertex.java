@@ -47,6 +47,11 @@ public class Vertex
 		this(r, u, v, new Vector3f(x, y, z));
 	}
 
+	public Vertex(float x, float y, float z, float u, float v)
+	{
+		this(new Vector3f(x, y, z), u, v, 0, 0, 0);
+	}
+	
 	public Vertex(float x, float y, float z, float u, float v, float nX, float nY, float nZ)
 	{
 		this(new Vector3f(x, y, z), u, v, nX, nY, nZ);

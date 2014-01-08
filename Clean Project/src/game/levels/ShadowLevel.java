@@ -59,19 +59,22 @@ public class ShadowLevel extends Level
 		Material building = new Material("buildingMtl");
 		building.setTexture(0, new Texture("buildingTex_COLOR.png").getTextureID());
 		building.setTexture(1, new Texture("buildingTex_NRM.png").getTextureID());
+		building.setSpecIntensity(.5f);
+		building.setSpecularExponenet(64);
 		
 		//Meshes		
 		StandardMesh floor = new StandardMesh();
-		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/floor.obj"));
-		floor.setMaterial("groundMtl");
+		floor.addVertices(ObjectLoader.loadOBJ("/res/OBJ/ground.obj"));
+		floor.setMaterial("metalMtl");
 		floor.formMesh();
-		floor.setScale(2f);
+		floor.setScale(3f);
 		floor.setTranslation(new Vector3f(0f, -floor.getHeight(), 0f));
-		floor.setTextureScale(.025f);
+		floor.setRotation(new Vector3f(0f, 0f, 0f));
+		floor.setTextureScale(.1f);
 		meshes.add(floor);
 		
 		StandardMesh object0 = new StandardMesh();
-		object0.addVertices(ObjectLoader.loadOBJ("/res/OBJ/pyro0.obj"));
+		object0.addVertices(ObjectLoader.loadOBJ("/res/OBJ/pyro.obj"));
 		object0.setMaterial("Material__10");
 		object0.formMesh();
 		object0.setScale(1f);
@@ -89,10 +92,10 @@ public class ShadowLevel extends Level
 		meshes.add(object1);	
 		
 		StandardMesh object2 = new StandardMesh();
-		object2.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		object2.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
 		object2.setMaterial("buildingMtl");
 		object2.formMesh();
-		object2.setScale(3f);
+		object2.setScale(1f);
 		object2.setRotation(new Vector3f(0f, 0f, 0f));
 		object2.setTranslation(new Vector3f(15f, 1f + meshes.get(0).getHeight() * 2, -25f));
 		//meshes.add(object2);	
@@ -102,8 +105,8 @@ public class ShadowLevel extends Level
 		object3.setMaterial("metalMtl");
 		object3.setScale(5f);
 		object3.setTextureScale(.15f);
-		object3.setRotation(new Vector3f(90f, 0f, 0f));
-		object3.setTranslation(new Vector3f(35f, object3.getRWidth() + 1.8f, 35f));
+		object3.setRotation(new Vector3f(-90f, 0f, 0f));
+		object3.setTranslation(new Vector3f(35f, object3.getRWidth() + 1.8f, 55f));
 		object3.formMesh();				
 		
 		meshes.add(object3);
@@ -114,6 +117,7 @@ public class ShadowLevel extends Level
 		shadowPass();
 		renderPass();
 		RenderHelper.renderQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
+		RenderHelper.renderTextureQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
 	}
 	
 	private void shadowPass()
@@ -158,7 +162,7 @@ public class ShadowLevel extends Level
 			Game.getShader().uniformData4f("lightSpace[" + i + "]", Transform.lightSpace());	
 			
 			//shadow
-			((ShadowSpotLight) (lights.getShadowSpotLights().get(i))).getLightMap().readBind(i);;
+			((ShadowSpotLight) (lights.getShadowSpotLights().get(i))).getLightMap().readBind(i);
 		}		
 
 		//render
@@ -197,7 +201,7 @@ public class ShadowLevel extends Level
 		
 		if(InputHelper.isKeyDown(Keyboard.KEY_RIGHT)) meshes.get(1).translate(new Vector3f(-.15f, 0f, 0f));
 		
-		if(!InputHelper.isKeyDown(Keyboard.KEY_R)) meshes.get(1).rotate(new Vector3f(0f, 1f, 0f));
+		if(!InputHelper.isKeyDown(Keyboard.KEY_R)) meshes.get(1).rotate(new Vector3f(0f, .75f, 0f));
 		
 		if(!InputHelper.isKeyDown(Keyboard.KEY_Z)) Transform.setZoom(false);
 		

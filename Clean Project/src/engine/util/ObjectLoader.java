@@ -57,10 +57,7 @@ public class ObjectLoader
 					{
 						v.set(Float.valueOf(match.group(0)), (i));
 					}
-					
-					v.swapYZ();
 
-				//	positions.add(fixMatrix.mul(v));
 					positions.add(v);
 				}
 
@@ -96,8 +93,6 @@ public class ObjectLoader
 					{
 						v.set(Float.valueOf(match.group(0)), i);
 					}
-					
-					v.swapYZ();
 
 					normals.add(v);
 

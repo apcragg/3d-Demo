@@ -3,6 +3,7 @@ package engine.main;
 import engine.levels.Level;
 import engine.shaders.PhongShader;
 import engine.shaders.QuadShader;
+import engine.shaders.ScreenQuadShader;
 import engine.shaders.ShaderBase;
 import engine.shaders.ShadowShader;
 import engine.util.InputHelper;
@@ -12,9 +13,10 @@ import game.levels.ShadowLevel;
 
 public class Game
 {
-	public static int PHONG  = 0;
-	public static int SHADOW = 1;
-	public static int QUAD 	 = 2;
+	public static int PHONG  	  = 0;
+	public static int SHADOW 	  = 1;
+	public static int QUAD 		  = 2;
+	public static int SCREEN_QUAD = 3;
 	
 
 	private static ShaderBase[] shaders;
@@ -30,7 +32,7 @@ public class Game
 	public void setup()
 	{
 		new InputHelper();
-		shaders = new ShaderBase[]{ new PhongShader(), new ShadowShader(), new QuadShader()};
+		shaders = new ShaderBase[]{ new PhongShader(), new ShadowShader(), new QuadShader(), new ScreenQuadShader()};
 		levels 	= new Level[]{ new MainLevel(), new ShadowLevel()};
 		currentLevel 	= 1;
 		currentShader 	= 0;

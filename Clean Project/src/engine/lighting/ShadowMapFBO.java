@@ -49,7 +49,7 @@ public class ShadowMapFBO
 		c_texture = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, c_texture);
 				
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, width, height, 0, GL_RG, GL_FLOAT, (ByteBuffer) null);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -104,7 +104,7 @@ public class ShadowMapFBO
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//sets the face culling differently
-		glFrontFace(GL_CW);
+		glFrontFace(GL_CCW);
 		
 			
 	}
@@ -141,7 +141,7 @@ public class ShadowMapFBO
 		glViewport(0,0, Window.HEIGHT, Window.WIDTH);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);	
 		
-		glFrontFace(GL_CCW);
+		glFrontFace(GL_CW);
 	}
 	
 	/**

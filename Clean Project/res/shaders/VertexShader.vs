@@ -40,14 +40,17 @@ flat out int s2Num_;
 //Benny's code. See engine.main.OBJLoader in the calculateTangnet() method for his github link.
 mat3  calculateTBN()
 {
-	vec3 wolrd_tangent = (worldSpace * vec4(tangent, 0f)).xyz;	
-	vec3 t = normalize(tangent);
+	vec3 worldNormal = (worldSpace * vec4(normal, 0f)).xyz;
+	worldNormal = normalize(worldNormal);
+
+	vec3 world_tangent = (worldSpace * vec4(tangent, 0f)).xyz;	
+	vec3 t = normalize(world_tangent);
 	
-	t = normalize(t - dot(t, object_normal) * object_normal);
+	t = normalize(t - dot(t, worldNormal) * worldNormal);
 	
-	vec3 bitangent = cross(t, object_normal);
+	vec3 bitangent = cross(t, worldNormal);
 	
-	return mat3(t, bitangent, object_normal);
+	return mat3(t, bitangent, worldNormal);
 }
 
 // displacement mapping

@@ -16,6 +16,7 @@ import engine.util.ObjectLoader;
 public class RenderHelper
 {
 	private static StandardMesh quad;
+	private static ScreenQuadHelper screenQuad;
 
 	public RenderHelper()
 	{
@@ -30,15 +31,17 @@ public class RenderHelper
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glEnable(GL_DEPTH_CLAMP);
 		glEnable(GL_CULL_FACE);
-		glFrontFace(GL_CCW);
+		glFrontFace(GL_CW);
 		
 		quad = new StandardMesh();
 		quad.addVertices(ObjectLoader.loadOBJ("/res/OBJ/plane.obj"));
 		quad.setTranslation(new Vector3f(0f, 50f, 70f));
-		quad.setRotation(new Vector3f(90f, 90f, 0f));
+		quad.setRotation(new Vector3f(0f, 90f, 0f));
 		quad.setScale(30f);
 		quad.setTextureScale(1f);
 		quad.formMesh();		
+		
+		screenQuad = new ScreenQuadHelper(-1);
 	}
 
 	public static void clear()
@@ -72,5 +75,15 @@ public class RenderHelper
 			
 		glBindTexture(GL_TEXTURE_2D, 0);
 		 
+	}
+	
+	public static void renderTextureQuad(int texture)
+	{
+		Game.setShader(Game.SCREEN_QUAD);
+		
+		screenQuad.setTexture(texture);
+		screenQuad.render();
+		
+		Game.setShader(Game.PHONG);
 	}
 }

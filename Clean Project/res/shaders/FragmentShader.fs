@@ -220,7 +220,7 @@ void calculateNormals()
 {
 	if(normalMap == 1)
 	{
-		normal = tbnMatrix * (2f * texture2D(normalTex, uvCoords).xyz - 1f);
+		normal = normalize(tbnMatrix * (2f * texture2D(normalTex, uvCoords).xyz - 1f)); 
 	}
 }
 
@@ -232,12 +232,12 @@ void calculateParallax()
 {
 	if(parallaxMapping == 1)
 	{
-		float heightSample = texture2D(parallaxTex, vec2(uvCoords.x, uvCoords.y)).x;                
-        float hsb = .05f * heightSample - 0.03f;
+		float heightSample = texture2D(parallaxTex, uvCoords).x;                
+        float hsb = (0.05f * heightSample) - 0.03f;
                 
-        uvCoords = vec2(uvCoords.x, uvCoords.y) + (tbnMatrix * normalize(camera_Pos - world_pos)).xy * hsb ;
+        uvCoords = uvCoords  + (((normalize(camera_Pos - world_pos) * tbnMatrix).xy) * hsb);
 	}	
-	normalize(object_normal);
+	
 }
 
 float shadowLookup(int samp, vec2 shadowUV, float z)
@@ -326,7 +326,7 @@ vec4 shadowSpotLightLoop()
 void main()
 {
 	//pre comp fixes
-	if(!(parallaxMapping == 1)) uvCoords.y = -uvCoords.y;
+	uvCoords.y = -uvCoords.y;
 	normal = normalize(object_normal);
 	
 	//prepare normals and uvs from normal/parallax maps

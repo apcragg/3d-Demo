@@ -146,7 +146,7 @@ public class ShadowMapFBO
 	
 	public void writeUnBind()
 	{
-		glViewport(0,0, Window.HEIGHT, Window.WIDTH);
+		glViewport(0,0, Window.WIDTH, Window.HEIGHT);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);	
 		
 		glFrontFace(GL_CW);

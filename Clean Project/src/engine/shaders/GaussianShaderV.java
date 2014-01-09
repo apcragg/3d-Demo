@@ -2,16 +2,16 @@ package engine.shaders;
 
 import engine.util.ShaderLoader;
 
-public class GaussinShaderV extends ShaderBase
+public class GaussianShaderV extends ShaderBase
 {
 private int programHandle;
 	
-	public GaussinShaderV()
+	public GaussianShaderV()
 	{
 		setProgramHandle(programId);
 		
-		addVertexShader(ShaderLoader.loadShader("/res/shaders/GaussinShader.vs"));
-		addFragmentShader(ShaderLoader.loadShader("/res/shaders/GaussinShader_V.fs"));
+		addVertexShader(ShaderLoader.loadShader("/res/shaders/GaussianShader.vs"));
+		addFragmentShader(ShaderLoader.loadShader("/res/shaders/GaussianShader_V.fs"));
 		
 		linkProgram();
 		use();

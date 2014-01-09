@@ -272,7 +272,7 @@ vec4 calculateShadows(SpotLight s, int i)
 	float cosTheta = clamp(dot(normal, normalize(-s.direction)), 0f, 1f);
 		if(cosTheta < 0.025f) return calculateSpotLights(s, vec2(0.05f, 0.0f));
 		
-	float bias = .0005f * tan(acos(cosTheta));	
+	float bias = .001f * tan(acos(cosTheta));	
 	bias = clamp(bias, 0.0f, 0.01f);
 	
 	vec2 uvCoord = shadowCoord[i].xy;

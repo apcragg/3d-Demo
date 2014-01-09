@@ -29,7 +29,7 @@ import engine.math.Vector3f;
 import engine.polygons.StandardMesh;
 import engine.renderer.Camera;
 import engine.renderer.FramebufferHelper;
-import engine.renderer.GaussinBlur;
+import engine.renderer.GaussianBlur;
 import engine.renderer.RenderHelper;
 import engine.util.InputHelper;
 import engine.util.ObjectLoader;
@@ -60,8 +60,8 @@ public class ShadowLevel extends Level
 		lights.addLight(new AmbientLight(.01f, Light.WHITE_LIGHT));
 		lights.addLight(new ShadowSpotLight(new Vector3f(-80f, 68f, 0f), new Vector3f(1f, .894f, .807f), new Vector3f(1f, -.65f, 0f), .4f, 35f));
 		lights.addLight(new ShadowSpotLight(new Vector3f(90f, 68f, 80f), new Vector3f(1f, .89f, .89f), new Vector3f(-1f, -.65f, -1f), .4f, 35f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -80f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 35f));	
-		lights.addLight(new PlayerSpotLight(new Vector3f(1f, 1f, 1f), .7f, 10f));
+		//lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -80f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 35f));	
+		//lights.addLight(new PlayerSpotLight(new Vector3f(1f, 1f, 1f), .7f, 10f));
 		
 		//starting point
 		Camera.setPos(new Vector3f(70f, 56f, 60f));
@@ -135,6 +135,15 @@ public class ShadowLevel extends Level
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
 		
+		renderTarget1 = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, renderTarget1);
+				
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Window.WIDTH, Window.HEIGHT, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
+		
 		finalRender = new FramebufferHelper();
 		finalRender.generateFramebuffer(Window.WIDTH, Window.HEIGHT);
 		finalRender.attatchTexture(GL_COLOR_ATTACHMENT0, renderTarget0);
@@ -145,12 +154,9 @@ public class ShadowLevel extends Level
 	{
 		shadowPass();
 		renderPass();
-		glDisable(GL_DEPTH_TEST);
-		//RenderHelper.renderQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
-		RenderHelper.renderQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
-		GaussinBlur.blurTexture(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture(), ((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture_copy(), 3076, 3076);
+		
+		GaussianBlur.blurTexture(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture(), ((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture_copy(), ShadowSpotLight.size, ShadowSpotLight.size);
 		RenderHelper.renderTextureQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
-		glEnable(GL_DEPTH_TEST);
 	}
 	
 	private void shadowPass()
@@ -209,6 +215,8 @@ public class ShadowLevel extends Level
 	private void finalRender()
 	{
 		RenderHelper.setBackfaceCulling(false);
+		
+		renderTarget0 = GaussianBlur.blurTexture(renderTarget0, renderTarget1, Window.HEIGHT, Window.WIDTH);
 		
 		RenderHelper.renderFullscreenQuad(renderTarget0);
 	}

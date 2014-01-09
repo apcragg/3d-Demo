@@ -1,9 +1,9 @@
 package engine.main;
 
 import engine.levels.Level;
-import engine.renderer.GaussinBlur;
-import engine.shaders.GaussinShaderH;
-import engine.shaders.GaussinShaderV;
+import engine.renderer.GaussianBlur;
+import engine.shaders.GaussianShaderH;
+import engine.shaders.GaussianShaderV;
 import engine.shaders.PhongShader;
 import engine.shaders.QuadShader;
 import engine.shaders.ScreenQuadShader;
@@ -37,8 +37,8 @@ public class Game
 	public void setup()
 	{
 		new InputHelper();
-		new GaussinBlur();
-		shaders = new ShaderBase[]{ new PhongShader(), new ShadowShader(), new QuadShader(), new ScreenQuadShader(), new GaussinShaderV(), new GaussinShaderH()};
+		new GaussianBlur();
+		shaders = new ShaderBase[]{ new PhongShader(), new ShadowShader(), new QuadShader(), new ScreenQuadShader(), new GaussianShaderV(), new GaussianShaderH()};
 		levels 	= new Level[]{ new MainLevel(), new ShadowLevel()};
 		currentLevel 	= 1;
 		currentShader 	= 0;

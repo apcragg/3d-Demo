@@ -79,13 +79,21 @@ public class RenderHelper
 	
 	public static void renderTextureQuad(int texture)
 	{		
+		glDisable(GL_DEPTH_TEST);
+		
 		screenQuad.setTexture(texture);
 		screenQuad.render(Game.SCREEN_QUAD);
+		
+		glEnable(GL_DEPTH_TEST);
 	}
 	
 	public static void renderFullscreenQuad(int texture)
-	{		
+	{	
+		glDisable(GL_DEPTH_TEST);
+		
 		fullScreenQuad.setTexture(texture);
 		fullScreenQuad.render(Game.SCREEN_QUAD);
+		
+		glEnable(GL_DEPTH_TEST);
 	}
 }

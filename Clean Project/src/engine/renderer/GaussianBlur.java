@@ -7,12 +7,12 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import engine.main.Game;
 
-public class GaussinBlur
+public class GaussianBlur
 {
 	private static FramebufferHelper ping = new FramebufferHelper();
 	private static FramebufferHelper pong = new FramebufferHelper();
 	
-	public GaussinBlur()
+	public GaussianBlur()
 	{
 		ping.generateFramebuffer(0, 0);
 		pong.generateFramebuffer(0, 0);

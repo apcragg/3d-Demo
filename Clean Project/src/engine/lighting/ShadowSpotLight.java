@@ -13,11 +13,13 @@ public class ShadowSpotLight extends SpotLight
 	private ShadowMapFBO lightMap;
 	private float fov;
 	
+	public static int size = 2048;
+	
 	public ShadowSpotLight(Vector3f pos, Vector3f color, Vector3f direction, float angle, float intensity)
 	{
 		super(pos, color, direction, angle, intensity);
 		
-		lightMap = new ShadowMapFBO(3076, 3076);
+		lightMap = new ShadowMapFBO(size, size);
 		fov = 180 * (1 - angle);
 	}
 	

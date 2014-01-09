@@ -53,7 +53,7 @@ public class FramebufferHelper
 		
 		renderBuffer = glGenRenderbuffers();
 		glBindRenderbuffer(GL_RENDERBUFFER, renderBuffer);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, width, height);
 		glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBuffer);
 	}
 	

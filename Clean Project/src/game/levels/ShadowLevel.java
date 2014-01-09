@@ -1,5 +1,10 @@
 package game.levels;
 
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL14.*;
+import static org.lwjgl.opengl.GL30.*;
+
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +20,7 @@ import engine.lighting.ShadowMapFBO;
 import engine.lighting.ShadowSpotLight;
 import engine.main.Game;
 import engine.main.Main;
+import engine.main.Window;
 import engine.materials.Material;
 import engine.materials.Texture;
 import engine.math.Matrix4f;
@@ -22,6 +28,8 @@ import engine.math.Transform;
 import engine.math.Vector3f;
 import engine.polygons.StandardMesh;
 import engine.renderer.Camera;
+import engine.renderer.FramebufferHelper;
+import engine.renderer.GaussinBlur;
 import engine.renderer.RenderHelper;
 import engine.util.InputHelper;
 import engine.util.ObjectLoader;
@@ -30,6 +38,8 @@ public class ShadowLevel extends Level
 {
 	private LightingHandler lights;
 	private List<StandardMesh> meshes;
+	private int renderTarget0, renderTarget1;
+	private FramebufferHelper finalRender;
 	
 	int test;
 	
@@ -44,7 +54,7 @@ public class ShadowLevel extends Level
 	}
 	
 	private void setup()
-	{
+	{		
 		RenderHelper.setBackfaceCulling(true);
 		
 		lights.addLight(new AmbientLight(.01f, Light.WHITE_LIGHT));
@@ -92,13 +102,13 @@ public class ShadowLevel extends Level
 		meshes.add(object1);	
 		
 		StandardMesh object2 = new StandardMesh();
-		object2.addVertices(ObjectLoader.loadOBJ("/res/OBJ/sphere.obj"));
-		object2.setMaterial("buildingMtl");
+		object2.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		object2.setMaterial("default");
 		object2.formMesh();
-		object2.setScale(1f);
+		object2.setScale(.3f);
 		object2.setRotation(new Vector3f(0f, 0f, 0f));
 		object2.setTranslation(new Vector3f(15f, 1f + meshes.get(0).getHeight() * 2, -25f));
-		//meshes.add(object2);	
+		meshes.add(object2);	
 		
 		StandardMesh object3 = new StandardMesh();
 		object3.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
@@ -110,14 +120,37 @@ public class ShadowLevel extends Level
 		object3.formMesh();				
 		
 		meshes.add(object3);
+		
+		setupRenderTarget();
+	}
+	
+	private void setupRenderTarget()
+	{		
+		renderTarget0 = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, renderTarget0);
+				
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Window.WIDTH, Window.HEIGHT, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
+		
+		finalRender = new FramebufferHelper();
+		finalRender.generateFramebuffer(Window.WIDTH, Window.HEIGHT);
+		finalRender.attatchTexture(GL_COLOR_ATTACHMENT0, renderTarget0);
+		finalRender.attachDepthRenderbuffer();
 	}
 	
 	public void render()
 	{
 		shadowPass();
 		renderPass();
+		glDisable(GL_DEPTH_TEST);
+		//RenderHelper.renderQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
 		RenderHelper.renderQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
+		GaussinBlur.blurTexture(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture(), ((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture_copy(), 3076, 3076);
 		RenderHelper.renderTextureQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
+		glEnable(GL_DEPTH_TEST);
 	}
 	
 	private void shadowPass()
@@ -141,7 +174,7 @@ public class ShadowLevel extends Level
 	}
 	
 	private void renderPass()
-	{
+	{		
 		RenderHelper.setBackfaceCulling(true);
 		
 		//pre-render
@@ -166,9 +199,18 @@ public class ShadowLevel extends Level
 		}		
 
 		//render
+		finalRender.writeBind();
 		for(StandardMesh m : meshes) m.render();
+		finalRender.writeUnBind();		
 		
-		ShadowMapFBO.readUnBind();
+		finalRender();
+	}
+	
+	private void finalRender()
+	{
+		RenderHelper.setBackfaceCulling(false);
+		
+		RenderHelper.renderFullscreenQuad(renderTarget0);
 	}
 
 	public void update()
@@ -183,6 +225,8 @@ public class ShadowLevel extends Level
 		//object updating
 		Camera.update();
 		InputHelper.update();
+		
+		meshes.get(3).setTranslation(Camera.getPos());
 		
 		//conditional updating
 		if(InputHelper.isKeyDown(Keyboard.KEY_ESCAPE)) Main.quit();

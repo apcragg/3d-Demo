@@ -10,11 +10,11 @@ public class Window
 	public static float ASPECT_RATIO;
 	public static String title;
 
-	public Window(int width, float aspectRatio)
+	public Window(int height, float aspectRatio)
 	{
-		Window.ASPECT_RATIO = aspectRatio;
-		Window.WIDTH = width;
-		Window.HEIGHT = (int) (Window.ASPECT_RATIO * Window.WIDTH);
+		Window.ASPECT_RATIO = aspectRatio;	
+		Window.HEIGHT = height;
+		Window.WIDTH = (int) (Window.ASPECT_RATIO * Window.HEIGHT);
 		Window.title = "Clean Project";
 
 		createDisplay();
@@ -26,7 +26,7 @@ public class Window
 	{
 		try
 		{
-			Display.setDisplayMode(new DisplayMode(HEIGHT, WIDTH));
+			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.setTitle(Window.title);
 			Display.create();
 			Display.setFullscreen(true);

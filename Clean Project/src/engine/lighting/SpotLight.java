@@ -12,6 +12,7 @@ public class SpotLight implements Light
 {
 	protected float angle, intensity;
 	protected Vector3f color, pos, direction;
+	protected boolean on;
 
 	protected float rotation;
 
@@ -39,11 +40,12 @@ public class SpotLight implements Light
 		this.direction = direction;
 
 		this.rotation = 0f;
+		this.on = true;
 	}
 
 	public void update()
 	{
-		if (updateCounter < PhongShader.MAX_SPOT_LIGHTS)
+		if (updateCounter < PhongShader.MAX_SPOT_LIGHTS )
 		{
 			Game.getShader().uniformData1f("spotLights[" + updateCounter + "].angle", angle);
 			Game.getShader().uniformData1f("spotLights[" + updateCounter
@@ -133,5 +135,16 @@ public class SpotLight implements Light
 	{
 		updateCounter = 0;
 	}
+	
+	public boolean isOn()
+	{
+		return on;
+	}
+	
+	public void setOn(boolean b)
+	{
+		this.on = b;
+	}
+
 
 }

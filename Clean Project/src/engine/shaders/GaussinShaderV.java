@@ -2,16 +2,16 @@ package engine.shaders;
 
 import engine.util.ShaderLoader;
 
-public class ScreenQuadShader extends ShaderBase
+public class GaussinShaderV extends ShaderBase
 {
-	private int programHandle;
+private int programHandle;
 	
-	public ScreenQuadShader()
+	public GaussinShaderV()
 	{
 		setProgramHandle(programId);
 		
-		addVertexShader(ShaderLoader.loadShader("/res/shaders/screenQuad.vs"));
-		addFragmentShader(ShaderLoader.loadShader("/res/shaders/screenQuad.fs"));
+		addVertexShader(ShaderLoader.loadShader("/res/shaders/GaussinShader.vs"));
+		addFragmentShader(ShaderLoader.loadShader("/res/shaders/GaussinShader_V.fs"));
 		
 		linkProgram();
 		use();
@@ -37,4 +37,5 @@ public class ScreenQuadShader extends ShaderBase
 	{
 		this.programHandle = programHandle;
 	}
+	
 }

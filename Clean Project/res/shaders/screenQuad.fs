@@ -7,5 +7,10 @@ out vec4 color;
 
 void main()
 {
-	color = vec4(texture(tex, texCoords).xy, .5f, 1f);
+	vec4 samp = texture(tex, texCoords);
+	
+	if(samp == vec4(0f, 0f, 0f, 1f))
+		discard;
+	else
+		color = samp;
 }

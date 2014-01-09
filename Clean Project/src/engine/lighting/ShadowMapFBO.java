@@ -21,7 +21,7 @@ import engine.util.LogHelper;
 
 public class ShadowMapFBO
 {
-	private int fbo, d_texture, c_texture;
+	private int fbo, d_texture, c_texture, c_texture_copy;
 
 	private int width, height;
 	
@@ -83,6 +83,16 @@ public class ShadowMapFBO
 			Main.quit();
 		}
 		
+		c_texture_copy = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, c_texture_copy);
+				
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, width, height, 0, GL_RG, GL_FLOAT, (ByteBuffer) null);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
+		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+		
 	}
 	
 	/**
@@ -104,9 +114,7 @@ public class ShadowMapFBO
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		//sets the face culling differently
-		glFrontFace(GL_CCW);
-		
-			
+		glFrontFace(GL_CCW);		
 	}
 	
 	/**
@@ -162,5 +170,10 @@ public class ShadowMapFBO
 	public int getC_texture()
 	{
 		return c_texture;
+	}
+	
+	public int getC_texture_copy()
+	{
+		return c_texture_copy;
 	}
 }

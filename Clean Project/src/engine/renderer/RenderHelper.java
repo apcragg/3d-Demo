@@ -16,7 +16,7 @@ import engine.util.ObjectLoader;
 public class RenderHelper
 {
 	private static StandardMesh quad;
-	private static ScreenQuadHelper screenQuad;
+	private static ScreenQuadHelper screenQuad, fullScreenQuad;
 
 	public RenderHelper()
 	{
@@ -41,7 +41,8 @@ public class RenderHelper
 		quad.setTextureScale(1f);
 		quad.formMesh();		
 		
-		screenQuad = new ScreenQuadHelper(-1);
+		screenQuad 		= new ScreenQuadHelper(-1, .5f, .5f);
+		fullScreenQuad	= new ScreenQuadHelper(-1, 2f, -1f);
 	}
 
 	public static void clear()
@@ -73,17 +74,18 @@ public class RenderHelper
 		
 		Game.setShader(Game.PHONG);
 			
-		glBindTexture(GL_TEXTURE_2D, 0);
-		 
+		glBindTexture(GL_TEXTURE_2D, 0);		 
 	}
 	
 	public static void renderTextureQuad(int texture)
-	{
-		Game.setShader(Game.SCREEN_QUAD);
-		
+	{		
 		screenQuad.setTexture(texture);
-		screenQuad.render();
-		
-		Game.setShader(Game.PHONG);
+		screenQuad.render(Game.SCREEN_QUAD);
+	}
+	
+	public static void renderFullscreenQuad(int texture)
+	{		
+		fullScreenQuad.setTexture(texture);
+		fullScreenQuad.render(Game.SCREEN_QUAD);
 	}
 }

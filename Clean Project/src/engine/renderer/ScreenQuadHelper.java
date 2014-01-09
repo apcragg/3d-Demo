@@ -10,17 +10,21 @@ import static org.lwjgl.opengl.GL30.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import engine.main.Game;
 import engine.polygons.Vertex;
 import engine.util.BufferHelper;
 
 public class ScreenQuadHelper
 {
 	private int abo, vbo, tbo;
+	private float s0, s1;
 	private int texture;
 	
-	public ScreenQuadHelper(int texture)
+	public ScreenQuadHelper(int texture, float s0, float s1)
 	{
 		this.texture = texture;
+		this.s0 = s0;
+		this.s1 = s1;
 		
 		setup();
 	}
@@ -56,8 +60,13 @@ public class ScreenQuadHelper
 		glBindVertexArray(0);
 	}
 	
-	public void render()
-	{
+	public void render(int shader)
+	{		
+		Game.setShader(shader);
+		
+		Game.getShader().uniformData1f("scale0", s0);
+		Game.getShader().uniformData1f("scale1", s1);
+		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		
@@ -75,10 +84,11 @@ public class ScreenQuadHelper
 		glDisableVertexAttribArray(1);
 		
 		glBindVertexArray(abo);
-		
-		
+				
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glActiveTexture(0);
+		
+		Game.setShader(Game.PHONG);
 	}
 
 	public void setTexture(int texture)

@@ -1,5 +1,6 @@
 #version 330
 #define MAX_SHADOW_SPOT_LIGHTS 4
+ #pragma optionNV unroll all
 
 layout(location = 0) in vec3 position;
 layout(location = 1) in vec2 uv;

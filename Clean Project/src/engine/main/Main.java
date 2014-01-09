@@ -3,6 +3,7 @@ package engine.main;
 import org.lwjgl.opengl.*;
 
 import engine.renderer.RenderHelper;
+import engine.util.LogHelper;
 
 public class Main
 {
@@ -19,8 +20,11 @@ public class Main
 	}
 
 	public Main()
-	{
+	{	
 		window = new Window(720, 16 / 9f);
+		
+		LogHelper.printInfo("Version: " + GL11.glGetString(GL11.GL_VERSION));
+		
 		game = new Game();
 		startLoop();
 

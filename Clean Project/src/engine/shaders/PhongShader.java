@@ -101,7 +101,7 @@ public class PhongShader extends ShaderBase
 		
 		for (int i = 0; i < MAX_SHADOW_SPOT_LIGHTS; i++)
 		{
-			createUniform("shadowTex[" + i + "]");
+			createUniform("shadowTex" + new Integer(i).toString());
 		}
 
 		uniformData1i("diffuseTex", 0);
@@ -111,7 +111,7 @@ public class PhongShader extends ShaderBase
 
 		for (int i = 0; i < MAX_SHADOW_SPOT_LIGHTS; i++)
 		{
-			uniformData1i("shadowTex[" + i + "]", 3 + i);			
+			uniformData1i("shadowTex" + new Integer(i).toString(), 3 + i);			
 		}
 	}
 

@@ -3,6 +3,7 @@
 #define MAX_SPOT_LIGHTS 8
 #define MAX_SHADOW_SPOT_LIGHTS 4
 
+
 layout(location = 0) out vec4 color;
 
 in vec3 world_pos;
@@ -58,7 +59,10 @@ uniform int slNum;
 uniform sampler2D diffuseTex;
 uniform sampler2D normalTex;
 uniform sampler2D parallaxTex;
-uniform sampler2DShadow shadowTex[MAX_SHADOW_SPOT_LIGHTS];
+uniform sampler2DShadow shadowTex0;
+uniform sampler2DShadow shadowTex1;
+uniform sampler2DShadow shadowTex2;
+uniform sampler2DShadow shadowTex3;
 uniform float textureScale;
 uniform int parallaxMapping;
 
@@ -256,7 +260,7 @@ float shadowLookup(int samp, vec2 shadowUV, float z)
 			offset.x = (1f/3076) * x;
 			offset.y = (1f/3076) * y;
 			
-			factor += (1.0f - texture(shadowTex[samp], vec3(shadowUV + offset, z - .0005f)));
+			factor += (1.0f - texture(shadowTex0, vec3(shadowUV + offset, z - .0005f)));
 			
 			count ++;
 		}
@@ -344,7 +348,7 @@ void main()
 	vec4 fogColor 			= calculateFog();
 	
 	//final color addition
- 	color =  color + lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + shadowSpotLightColor + fogColor + ambientColor;
+ 	color = lightColor + ambientColor + vec4(totalSpec, 1f) + pointLightColor + spotLightColor + shadowSpotLightColor + fogColor + ambientColor;
 	
 	//gamma
 	color.x = pow(color.x, 1f/gamma);

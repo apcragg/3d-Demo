@@ -260,7 +260,10 @@ float shadowLookup(int samp, vec2 shadowUV, float z)
 			offset.x = (1f/3076) * x;
 			offset.y = (1f/3076) * y;
 			
-			factor += (1.0f - texture(shadowTex0, vec3(shadowUV + offset, z - .0005f)));
+			if(samp == 0) factor += (1.0f - texture(shadowTex0, vec3(shadowUV + offset, z - .0005f)));
+			if(samp == 1) factor += (1.0f - texture(shadowTex1, vec3(shadowUV + offset, z - .0005f)));
+			if(samp == 2) factor += (1.0f - texture(shadowTex2, vec3(shadowUV + offset, z - .0005f)));
+			if(samp == 3) factor += (1.0f - texture(shadowTex3, vec3(shadowUV + offset, z - .0005f)));
 			
 			count ++;
 		}

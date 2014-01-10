@@ -27,6 +27,7 @@ import engine.math.Matrix4f;
 import engine.math.Transform;
 import engine.math.Vector3f;
 import engine.polygons.StandardMesh;
+import engine.polygons.Vertex;
 import engine.renderer.Camera;
 import engine.renderer.FramebufferHelper;
 import engine.renderer.GaussianBlur;
@@ -38,17 +39,16 @@ public class ShadowLevel extends Level
 {
 	private LightingHandler lights;
 	private List<StandardMesh> meshes;
-	private int renderTarget0, renderTarget1;
 	private FramebufferHelper finalRender;
-	
-	int test;
+	private int renderTarget0, renderTarget1;
+	private List<Vertex> stressTest;
 	
 	public ShadowLevel()
 	{
 		lights = new LightingHandler();
 		meshes = new ArrayList<StandardMesh>();
 		
-		test = new Texture("test.png").getTextureID();
+		stressTest = ObjectLoader.loadOBJ("/res/OBJ/highSphere.obj");
 		
 		setup();
 	}
@@ -111,11 +111,11 @@ public class ShadowLevel extends Level
 		meshes.add(object2);	
 		
 		StandardMesh object3 = new StandardMesh();
-		object3.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
-		object3.setMaterial("brickMtl");
-		object3.setScale(5f);
+		object3.addVertices(stressTest);
+		object3.setMaterial("groundMtl");
+		object3.setScale(.35f);
 		object3.setTextureScale(.15f);
-		object3.setRotation(new Vector3f(-90f, 0f, 0f));
+		object3.setRotation(new Vector3f(0f, 0f, 0f));
 		object3.setTranslation(new Vector3f(35f, object3.getRWidth() + 1.8f, 55f));
 		object3.formMesh();				
 		
@@ -130,8 +130,8 @@ public class ShadowLevel extends Level
 		glBindTexture(GL_TEXTURE_2D, renderTarget0);
 				
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Window.WIDTH, Window.HEIGHT, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
 		
@@ -139,8 +139,8 @@ public class ShadowLevel extends Level
 		glBindTexture(GL_TEXTURE_2D, renderTarget1);
 				
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Window.WIDTH, Window.HEIGHT, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
 		
@@ -216,9 +216,9 @@ public class ShadowLevel extends Level
 	{
 		RenderHelper.setBackfaceCulling(false);
 		
-		renderTarget0 = GaussianBlur.blurTexture(renderTarget0, renderTarget1, Window.HEIGHT, Window.WIDTH);
+		//renderTarget0 = GaussianBlur.blurTexture(renderTarget0, renderTarget1, Window.HEIGHT, Window.WIDTH);
 		
-		RenderHelper.renderFullscreenQuad(renderTarget0);
+		RenderHelper.renderFullscreenQuad(renderTarget0, Game.SCREEN_QUAD);
 	}
 
 	public void update()
@@ -239,7 +239,7 @@ public class ShadowLevel extends Level
 		//conditional updating
 		if(InputHelper.isKeyDown(Keyboard.KEY_ESCAPE)) Main.quit();
 		
-		if(InputHelper.isKeyPressed(Keyboard.KEY_L)) deployLight();
+		if(InputHelper.isKeyPressed(Keyboard.KEY_F)) deployLight();
 		
 		if(InputHelper.isKeyDown(Keyboard.KEY_Q)) meshes.get(1).translate(new Vector3f(0f, 0f, .15f));
 		
@@ -263,14 +263,14 @@ public class ShadowLevel extends Level
 	private void deployLight()
 	{
 		StandardMesh light = new StandardMesh();
-		light.setMaterial("lightMaterial");
-		light.addVertices(ObjectLoader.loadOBJ("/res/OBJ/light.obj"));
+		light.setMaterial("groundMtl");
+		light.addVertices(stressTest);
 		light.formMesh();
-		light.setScale(.5f);
+		light.setScale(.15f);
 		Vector3f lightPos = new Vector3f(Camera.getPos());
 
 		light.setTranslation(lightPos);
-		lights.addLight(new PointLight(lightPos, new Vector3f(5f, (1f / 2), (1f / 1)), new Vector3f(1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f)), 75f));
+		//lights.addLight(new PointLight(lightPos, new Vector3f(5f, (1f / 2), (1f / 1)), new Vector3f(1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f)), 75f));
 		meshes.add(light);
 	}
 

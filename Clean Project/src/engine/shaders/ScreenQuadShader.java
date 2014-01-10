@@ -19,7 +19,7 @@ public class ScreenQuadShader extends ShaderBase
 		setup();
 	}
 	
-	private void setup()
+	protected void setup()
 	{
 		createUniform("tex");		
 		createUniform("scale0");	

@@ -87,12 +87,12 @@ public class RenderHelper
 		glEnable(GL_DEPTH_TEST);
 	}
 	
-	public static void renderFullscreenQuad(int texture)
+	public static void renderFullscreenQuad(int texture, int shader)
 	{	
 		glDisable(GL_DEPTH_TEST);
 		
 		fullScreenQuad.setTexture(texture);
-		fullScreenQuad.render(Game.SCREEN_QUAD);
+		fullScreenQuad.render(shader);
 		
 		glEnable(GL_DEPTH_TEST);
 	}

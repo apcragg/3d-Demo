@@ -9,6 +9,7 @@ import engine.shaders.QuadShader;
 import engine.shaders.ScreenQuadShader;
 import engine.shaders.ShaderBase;
 import engine.shaders.ShadowShader;
+import engine.shaders.SuperSampleShader;
 import engine.util.InputHelper;
 import engine.util.LogHelper;
 import game.levels.MainLevel;
@@ -16,12 +17,13 @@ import game.levels.ShadowLevel;
 
 public class Game
 {
-	public static int PHONG  	  = 0;
-	public static int SHADOW 	  = 1;
-	public static int QUAD 		  = 2;
-	public static int SCREEN_QUAD = 3;
-	public static int GAUSSIN_V   = 4;
-	public static int GAUSSIN_H   = 5;
+	public static int PHONG  	   = 0;
+	public static int SHADOW 	   = 1;
+	public static int QUAD 		   = 2;
+	public static int SCREEN_QUAD  = 3;
+	public static int GAUSSIN_V    = 4;
+	public static int GAUSSIN_H    = 5;
+	public static int SUPER_SAMPLE = 6;
 	
 
 	private static ShaderBase[] shaders;
@@ -38,7 +40,7 @@ public class Game
 	{
 		new InputHelper();
 		new GaussianBlur();
-		shaders = new ShaderBase[]{ new PhongShader(), new ShadowShader(), new QuadShader(), new ScreenQuadShader(), new GaussianShaderV(), new GaussianShaderH()};
+		shaders = new ShaderBase[]{ new PhongShader(), new ShadowShader(), new QuadShader(), new ScreenQuadShader(), new GaussianShaderV(), new GaussianShaderH(), new SuperSampleShader()};
 		levels 	= new Level[]{ new MainLevel(), new ShadowLevel()};
 		currentLevel 	= 1;
 		currentShader 	= 0;

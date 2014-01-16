@@ -253,9 +253,9 @@ float shadowLookup(int samp, vec2 shadowUV, float z)
 	
 	int count = 0;
 	
-	for(float x = -1.5f; x <= 1.5f; x += 1.0f)
+	for(float x = -0.5f; x <= 0.5f; x += 1.0f)
 	{
-		for(float y = -1.5f; y <= 1.5f; y += 1.0f)
+		for(float y = -0.5f; y <= 0.5f; y += 1.0f)
 		{
 			offset.x = (1f/3076) * x;
 			offset.y = (1f/3076) * y;
@@ -287,7 +287,7 @@ vec4 calculateShadows(SpotLight s, int i)
 	
 	//if the texel is outside the shadowmap's view don't cast a shadow and early exit
 	vec2 uvTest = uvCoord;
-	if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) calculateSpotLights(s, vec2(1.0f, 1.0f)); 
+	if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) return calculateSpotLights(s, vec2(1.0f, 1.0f)); 
 	
 	/*
 	*Old code that might still be useful later.

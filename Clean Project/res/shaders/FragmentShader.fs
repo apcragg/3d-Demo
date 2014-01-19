@@ -59,10 +59,10 @@ uniform int slNum;
 uniform sampler2D diffuseTex;
 uniform sampler2D normalTex;
 uniform sampler2D parallaxTex;
-uniform sampler2D shadowTex0;
-uniform sampler2D shadowTex1;
-uniform sampler2D shadowTex2;
-uniform sampler2D shadowTex3;
+uniform sampler2DShadow shadowTex0;
+uniform sampler2DShadow shadowTex1;
+uniform sampler2DShadow shadowTex2;
+uniform sampler2DShadow shadowTex3;
 uniform float textureScale;
 uniform int parallaxMapping;
 
@@ -228,10 +228,6 @@ void calculateNormals()
 	}
 }
 
-// some weird negative shit going on on here. Because of the way parallax mapping works it
-// doesn't like having it's texture flipped upside down without having too it's eye vec flipped. 
-// In turn this means the normal y component needs to be flipped as well.
-
 void calculateParallax()
 {
 	if(parallaxMapping == 1)
@@ -244,6 +240,7 @@ void calculateParallax()
 	
 }
 
+/*
 float linstep(float mi, float ma, float v)  
 {
 	float f = clamp((v - mi) / (ma - mi), 0f, 1f);
@@ -286,65 +283,48 @@ float chebyshevUpperBound( float di, int i)
 	
 		return ReduceLightBleeding(p_max, .45f);  
 	}
+*/
 
-/*
 float shadowLookup(int samp, vec2 shadowUV, float z)
 {		
-	//shadowUV /= shadowCoord[samp].w; //only use for perspective shadow maps
 	shadowUV = clamp(shadowUV, 0.0001f, .9999f);
-	vec2 offset;
+	
 	float factor = 0.0f;
 	
-	int count = 0;
-	
-	for(float x = -0.5f; x <= 0.5f; x += 1.0f)
-	{
-		for(float y = -0.5f; y <= 0.5f; y += 1.0f)
-		{
-			offset.x = (1f/3076) * x;
-			offset.y = (1f/3076) * y;
-			
-			if(samp == 0) factor += (1.0f - texture(shadowTex0, vec3(shadowUV + offset, z - .0005f)));
-			if(samp == 1) factor += (1.0f - texture(shadowTex1, vec3(shadowUV + offset, z - .0005f)));
-			if(samp == 2) factor += (1.0f - texture(shadowTex2, vec3(shadowUV + offset, z - .0005f)));
-			if(samp == 3) factor += (1.0f - texture(shadowTex3, vec3(shadowUV + offset, z - .0005f)));
-			
-			count ++;
-		}
-	}
-	
-	return factor / count;
+			if(samp == 0) factor += (1.0f - texture(shadowTex0, vec3(shadowUV, z - .005f)));
+			if(samp == 1) factor += (1.0f - texture(shadowTex1, vec3(shadowUV , z - .0005f)));
+			if(samp == 2) factor += (1.0f - texture(shadowTex2, vec3(shadowUV, z - .0005f)));
+			if(samp == 3) factor += (1.0f - texture(shadowTex3, vec3(shadowUV, z - .0005f)));
+
+	return factor;
 }
-*/
+
 
 vec4 calculateShadows(SpotLight s, int i)
 {
 	vec2 visibility = vec2(1.0f);
+	vec2 uvCoord = shadowCoord[i].xy;
 	
+	//Biases the sampling based on the angle of intersection between the light and fragment
 	float cosTheta = clamp(dot(normal, normalize(-s.direction)), 0f, 1f);
 		if(cosTheta < 0.025f) return calculateSpotLights(s, vec2(0.05f, 0.0f));
 		
 	float bias = .001f * tan(acos(cosTheta));	
-	bias = clamp(bias, 0.0f, 0.01f);
+		bias = clamp(bias, 0.0f, 0.01f);
 	
-	vec2 uvCoord = shadowCoord[i].xy;
-	float z  = (shadowCoord[i].z - bias);// / shadowCoord[i].w;
+	float z  = (shadowCoord[i].z - bias);
 	
 	//if the texel is outside the shadowmap's view don't cast a shadow and early exit
 	vec2 uvTest = uvCoord;
 	if(uvTest.x > 1f || uvTest.y > 1f || uvTest.x < 0f || uvTest.y < 0f) return calculateSpotLights(s, vec2(1.0f, 1.0f)); 
 	
-	/*
-	*Old code that might still be useful later.
+	int sCount = 0, lCount = 0;
 	
-	int sCount = 0;
-	int lCount = 0;
-	
-	/for(int j = 0; j < 8; j++)
+	for(int j = 0; j < 8; j++)
 	{			
-		int index = int(8*random(floor(world_pos.xyz*1000.0), j))%8;
+		int index = int(8 * random(floor(world_pos.xyz * 1000.0), j)) % 8;
 	
-		float factor = shadowLookup(i, (uvCoord + (poissonDisk[index]/1400f)), z);
+		float factor = shadowLookup(i, (uvCoord + (poissonDisk[index]/800f)), z);
 		
 		if(factor == 1.0f) sCount++; if(sCount == 2 && j == 1){ return calculateSpotLights(s, vec2(.15f, 0f)); }
 		if(factor == 0.0f) lCount++; if(lCount == 2 && j == 1){ return calculateSpotLights(s, vec2(1.0f, 1.0f)); } 
@@ -352,15 +332,6 @@ vec4 calculateShadows(SpotLight s, int i)
 		visibility.x -= factor * (1f / 8) * .95;
 		visibility.y -= factor * (1f / 8);
 	}	
-	
-	* End old code
-	*/
-	
-	//early returns
-	
-	//float factor = shadowLookup(i, uvCoord, z);
-	//visibility.x -= factor * .95;
-	//visibility.y -= factor;
 		
 	return calculateSpotLights(s, visibility);
 }
@@ -371,8 +342,8 @@ vec4 shadowSpotLightLoop()
 	
 	for(int i = -1; i  < s2Num_; i++)
 	{
-		//totalLight += calculateShadows(shadowSpotLights[i], i);
-		totalLight += calculateSpotLights(shadowSpotLights[i], vec2(chebyshevUpperBound(shadowCoord[i].z, i)));
+		totalLight += calculateShadows(shadowSpotLights[i], i);
+		//totalLight += calculateSpotLights(shadowSpotLights[i], vec2(chebyshevUpperBound(shadowCoord[i].z, i)));
 	}
 	
 	return totalLight;

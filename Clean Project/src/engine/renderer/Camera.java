@@ -40,7 +40,7 @@ public class Camera
 		setSmoothing(1.3f);
 		setUp(yAxis);
 		setForward(new Vector3f(0f, 0f, -1f));
-		setGamma(1.5f);
+		setGamma(1.3f);
 	}
 
 	public static void rotateX(float amount)
@@ -125,6 +125,9 @@ public class Camera
 				* sensitivity);
 		if (InputHelper.isKeyDown(Keyboard.KEY_LCONTROL)) move(yAxis, -moveAmount
 				* sensitivity);
+
+		if (InputHelper.isKeyDown(Keyboard.KEY_G)) setGamma(getGamma() + .01f);
+		if (InputHelper.isKeyDown(Keyboard.KEY_H)) setGamma(getGamma() - .01f);
 	}
 
 	private static void move(Vector3f axis, float amount)

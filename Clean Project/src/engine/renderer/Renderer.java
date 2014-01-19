@@ -56,8 +56,8 @@ public class Renderer
 	{		
 		for(Light l :  lights.getShadowSpotLights())
 		{
-			RenderHelper.setBackfaceCulling(true);
-			GL11.glCullFace(GL11.GL_FRONT_FACE);
+//			RenderHelper.setBackfaceCulling(true);
+//			GL11.glCullFace(GL11.GL_FRONT_FACE);
 			
 			ShadowSpotLight light = ((ShadowSpotLight) l);
 			
@@ -72,7 +72,7 @@ public class Renderer
 			
 			RenderHelper.setBackfaceCulling(false);
 			GL11.glCullFace(GL11.GL_BACK);
-			GaussianBlur.blurTexture(light.getLightMap().getC_texture(), light.getLightMap().getC_texture_copy(), ShadowSpotLight.size,  ShadowSpotLight.size, true);
+//			GaussianBlur.blurTexture(light.getLightMap().getC_texture(), light.getLightMap().getC_texture_copy(), ShadowSpotLight.size,  ShadowSpotLight.size, true);
 		}	
 	}
 	

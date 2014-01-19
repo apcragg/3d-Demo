@@ -49,7 +49,7 @@ public class ShadowMapFBO
 		c_texture = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, c_texture);
 				
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, width, height, 0, GL_RG, GL_FLOAT, (ByteBuffer) null);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -86,7 +86,7 @@ public class ShadowMapFBO
 		c_texture_copy = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, c_texture_copy);
 				
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, (ByteBuffer) null);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, width, height, 0, GL_RG, GL_FLOAT, (ByteBuffer) null);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -128,7 +128,7 @@ public class ShadowMapFBO
 		glBindTexture(GL_TEXTURE_2D, c_texture);	  
 		
 		glActiveTexture(GL_TEXTURE3 + offset);
-		glBindTexture(GL_TEXTURE_2D, c_texture);	
+		glBindTexture(GL_TEXTURE_2D, d_texture);	
 	}
 	
 	/**

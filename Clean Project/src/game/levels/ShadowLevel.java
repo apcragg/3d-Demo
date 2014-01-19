@@ -183,7 +183,7 @@ public class ShadowLevel extends Level
 		Vector3f lightPos = new Vector3f(Camera.getPos());
 
 		light.setTranslation(lightPos);
-		lights.addLight(new PointLight(lightPos, new Vector3f(5f, (1f / 2), (1f / 1)), new Vector3f(1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f)), 75f));
+		//lights.addLight(new PointLight(lightPos, new Vector3f(5f, (1f / 2), (1f / 1)), new Vector3f(1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f)), 75f));
 		meshes.add(light);
 	}
 

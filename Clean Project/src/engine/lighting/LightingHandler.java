@@ -41,7 +41,7 @@ public class LightingHandler implements Component
 		for (Iterable<Light> l : lightCollection)
 		{
 			Iterator<Light> it = l.iterator();
-			Collections.sort((List<Light>) l);
+			//Collections.sort((List<Light>) l);
 
 			while (it.hasNext())
 			{

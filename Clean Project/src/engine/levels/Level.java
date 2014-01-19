@@ -9,5 +9,4 @@ public abstract class Level
 	public abstract void render();
 
 	public abstract void update();
-
 }

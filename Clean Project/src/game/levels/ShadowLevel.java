@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
 
 import engine.levels.Level;
 import engine.lighting.AmbientLight;
@@ -39,8 +40,6 @@ public class ShadowLevel extends Level
 {
 	private LightingHandler lights;
 	private List<StandardMesh> meshes;
-	private FramebufferHelper finalRender;
-	private int renderTarget0, renderTarget1;
 	private List<Vertex> stressTest;
 	
 	public ShadowLevel()
@@ -58,10 +57,10 @@ public class ShadowLevel extends Level
 		RenderHelper.setBackfaceCulling(true);
 		
 		lights.addLight(new AmbientLight(.01f, Light.WHITE_LIGHT));
-		lights.addLight(new ShadowSpotLight(new Vector3f(-80f, 68f, 0f), new Vector3f(1f, .894f, .807f), new Vector3f(1f, -.65f, 0f), .4f, 35f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(90f, 68f, 80f), new Vector3f(1f, .89f, .89f), new Vector3f(-1f, -.65f, -1f), .4f, 35f));
-		lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -80f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 35f));	
-		lights.addLight(new PlayerSpotLight(new Vector3f(1f, 1f, 1f), .7f, 10f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(-80f, 68f, 0f), new Vector3f(1f, .894f, .807f), new Vector3f(1f, -.65f, 0f), .4f, 45f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(90f, 68f, 80f), new Vector3f(1f, .89f, .89f), new Vector3f(-1f, -.65f, -1f), .4f, 45f));
+		lights.addLight(new ShadowSpotLight(new Vector3f(0f, 66f, -80f), new Vector3f(1f, 1f, 1f), new Vector3f(0f, -.8f, 1f), .4f, 45f));	
+		//lights.addLight(new PlayerSpotLight(new Vector3f(1f, 1f, 1f), .7f, 10f));
 		
 		//starting point
 		Camera.setPos(new Vector3f(70f, 56f, 60f));
@@ -98,7 +97,7 @@ public class ShadowLevel extends Level
 		object1.formMesh();
 		object1.setScale(.75f);
 		object1.setRotation(new Vector3f(0f, 0f, 0f));
-		object1.setTranslation(new Vector3f(15f, .15f, -25f));	
+		object1.setTranslation(new Vector3f(15f,  - .5f, -25f));	
 		meshes.add(object1);	
 		
 		StandardMesh object2 = new StandardMesh();
@@ -120,105 +119,19 @@ public class ShadowLevel extends Level
 		object3.formMesh();				
 		
 		meshes.add(object3);
-		
-		setupRenderTarget();
 	}
 	
-	private void setupRenderTarget()
-	{		
-		renderTarget0 = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D, renderTarget0);
-				
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Window.WIDTH, Window.HEIGHT, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
-		
-		renderTarget1 = glGenTextures();
-		glBindTexture(GL_TEXTURE_2D, renderTarget1);
-				
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Window.WIDTH, Window.HEIGHT, 0, GL_RGBA, GL_FLOAT, (ByteBuffer) null);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);	
-		
-		finalRender = new FramebufferHelper();
-		finalRender.generateFramebuffer(Window.WIDTH, Window.HEIGHT);
-		finalRender.attatchTexture(GL_COLOR_ATTACHMENT0, renderTarget0);
-		finalRender.attachDepthRenderbuffer();
-	}
 	
 	public void render()
 	{
-		shadowPass();
-		renderPass();
+		Game.renderer.startRender();
 		
-		GaussianBlur.blurTexture(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture(), ((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture_copy(), ShadowSpotLight.size, ShadowSpotLight.size);
+		Game.renderer.render(lights, meshes);
+		Game.renderer.shadowRender(lights, meshes);
+		
+		Game.renderer.endRender();
+	
 		RenderHelper.renderTextureQuad(((ShadowSpotLight) lights.getShadowSpotLights().get(0)).getLightMap().getC_texture());
-	}
-	
-	private void shadowPass()
-	{
-		RenderHelper.setBackfaceCulling(true);
-		
-		for(Light l :  lights.getShadowSpotLights())
-		{
-			ShadowSpotLight light = ((ShadowSpotLight) l);
-			
-			light.lightSpaceUpdate();
-			light.getLightMap().writeBind();
-			
-			Game.setShader(Game.SHADOW);
-			Game.getShader().uniformData4f("lightSpace", Transform.lightSpace());
-			
-			for(StandardMesh m : meshes) m.render();
-			
-			light.getLightMap().writeUnBind();		
-		}	
-	}
-	
-	private void renderPass()
-	{		
-		RenderHelper.setBackfaceCulling(true);
-		
-		//pre-render
-		RenderHelper.clear();
-		
-		//shader uniform updating
-		Transform.setupPerspective(85, 1000f);
-		
-		Game.setShader(Game.PHONG);
-		Game.getShader().uniformData4f("viewSpace", Transform.viewSpace());
-		Game.getShader().uniformData4f("projectedSpace", Transform.perspectiveMatrix());
-		
-		defaultMaterial.update();
-		
-		for(int i = 0; i < lights.getShadowSpotLights().size(); i++)
-		{
-			((ShadowSpotLight) lights.getShadowSpotLights().get(i)).lightSpaceUpdate();
-			Game.getShader().uniformData4f("lightSpace[" + i + "]", Transform.lightSpace());	
-			
-			//shadow
-			((ShadowSpotLight) (lights.getShadowSpotLights().get(i))).getLightMap().readBind(i);
-		}		
-
-		//render
-		finalRender.writeBind();
-		for(StandardMesh m : meshes) m.render();
-		finalRender.writeUnBind();		
-		
-		finalRender();
-	}
-	
-	private void finalRender()
-	{
-		RenderHelper.setBackfaceCulling(false);
-		
-		//renderTarget0 = GaussianBlur.blurTexture(renderTarget0, renderTarget1, Window.HEIGHT, Window.WIDTH);
-		
-		RenderHelper.renderFullscreenQuad(renderTarget0, Game.SCREEN_QUAD);
 	}
 
 	public void update()
@@ -234,7 +147,7 @@ public class ShadowLevel extends Level
 		Camera.update();
 		InputHelper.update();
 		
-		meshes.get(3).setTranslation(Camera.getPos());
+		//meshes.get(3).setTranslation(Camera.getPos());
 		
 		//conditional updating
 		if(InputHelper.isKeyDown(Keyboard.KEY_ESCAPE)) Main.quit();
@@ -270,7 +183,7 @@ public class ShadowLevel extends Level
 		Vector3f lightPos = new Vector3f(Camera.getPos());
 
 		light.setTranslation(lightPos);
-		//lights.addLight(new PointLight(lightPos, new Vector3f(5f, (1f / 2), (1f / 1)), new Vector3f(1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f)), 75f));
+		lights.addLight(new PointLight(lightPos, new Vector3f(5f, (1f / 2), (1f / 1)), new Vector3f(1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f), 1.0f - ((float) Math.random() * .2f)), 75f));
 		meshes.add(light);
 	}
 

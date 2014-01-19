@@ -7,9 +7,9 @@
 uniform sampler2D tex;
 
 in vec2 texCoords;
-out vec4 color;
+out vec3 color;
 
-float kernalSize = 1f;
+float kernalSize = 1.5f;
 
 vec4 blur()
 {
@@ -30,5 +30,5 @@ vec4 blur()
 
 void main()
 {
-	color = vec4(blur());
+	color = vec3(blur().xy, texture(tex, texCoords).z);
 }

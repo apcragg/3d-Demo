@@ -59,10 +59,10 @@ uniform int slNum;
 uniform sampler2D diffuseTex;
 uniform sampler2D normalTex;
 uniform sampler2D parallaxTex;
-uniform sampler2DShadow shadowTex0;
-uniform sampler2DShadow shadowTex1;
-uniform sampler2DShadow shadowTex2;
-uniform sampler2DShadow shadowTex3;
+uniform sampler2D shadowTex0;
+uniform sampler2D shadowTex1;
+uniform sampler2D shadowTex2;
+uniform sampler2D shadowTex3;
 uniform float textureScale;
 uniform int parallaxMapping;
 
@@ -244,6 +244,50 @@ void calculateParallax()
 	
 }
 
+float linstep(float mi, float ma, float v)  
+{
+	float f = clamp((v - mi) / (ma - mi), 0f, 1f);
+	
+	return f;
+}  
+
+float ReduceLightBleeding(float p_max, float Amount)  
+{  
+  // Remove the [0, Amount] tail and linearly rescale (Amount, 1].  
+   return linstep(Amount, 1, p_max);  
+}  
+
+float chebyshevUpperBound( float di, int i)
+	{
+		vec3 moments;
+	
+		// We retrive the two moments previously stored (depth and depth*depth)
+		if(i == 0) moments = (texture(shadowTex0, vec2(shadowCoord[i].xy))).xyz;
+		if(i == 1) moments = (texture(shadowTex1, vec2(shadowCoord[i].xy))).xyz;
+		if(i == 2) moments = (texture(shadowTex2, vec2(shadowCoord[i].xy))).xyz;
+		if(i == 3) moments = (texture(shadowTex3, vec2(shadowCoord[i].xy))).xyz;
+		
+		// Surface is fully lit. as the current fragment is before the light occluder
+		if (di <= moments.x + .001f)
+			return 1.0 ;
+	
+		// The fragment is either in shadow or penumbra. We now use chebyshev's upperBound to check
+		// How likely this pixel is to be lit (p_max)
+		float variance = moments.y - (moments.x*moments.x);
+		variance = max(variance,0.002);
+	
+		float d = di - moments.x;
+		float p_max = variance / (variance + d*d);
+		
+		if(di >= moments.z  +.001f)
+		{
+			return 0.0f;
+		}
+	
+		return ReduceLightBleeding(p_max, .45f);  
+	}
+
+/*
 float shadowLookup(int samp, vec2 shadowUV, float z)
 {		
 	//shadowUV /= shadowCoord[samp].w; //only use for perspective shadow maps
@@ -271,6 +315,7 @@ float shadowLookup(int samp, vec2 shadowUV, float z)
 	
 	return factor / count;
 }
+*/
 
 vec4 calculateShadows(SpotLight s, int i)
 {
@@ -313,9 +358,9 @@ vec4 calculateShadows(SpotLight s, int i)
 	
 	//early returns
 	
-	float factor = shadowLookup(i, uvCoord, z);
-	visibility.x -= factor * .95;
-	visibility.y -= factor;
+	//float factor = shadowLookup(i, uvCoord, z);
+	//visibility.x -= factor * .95;
+	//visibility.y -= factor;
 		
 	return calculateSpotLights(s, visibility);
 }
@@ -325,7 +370,10 @@ vec4 shadowSpotLightLoop()
 	vec4 totalLight = vec4(0f, 0f, 0f, 1f);
 	
 	for(int i = -1; i  < s2Num_; i++)
-		totalLight += calculateShadows(shadowSpotLights[i], i);
+	{
+		//totalLight += calculateShadows(shadowSpotLights[i], i);
+		totalLight += calculateSpotLights(shadowSpotLights[i], vec2(chebyshevUpperBound(shadowCoord[i].z, i)));
+	}
 	
 	return totalLight;
 }

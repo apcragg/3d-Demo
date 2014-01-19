@@ -77,8 +77,8 @@ public class MainLevel extends Level
 		Material.getMaterial("groundMtl").setTexture(1, new Texture("ConcreteTri_NRM.png").getTexture().getTextureID());
 		Material.getMaterial("groundMtl").setTexture(2, new Texture("dentTexture.jpg").getTexture().getTextureID());		
 		Material.getMaterial("groundMtl").setDisplacementFactor(.5f);
-		Material.getMaterial("groundMtl").setParallaxMapping(false);
-		Material.getMaterial("groundMtl").setDisplacementMapping(true);
+		Material.getMaterial("groundMtl").setParallaxMapping(true);
+		Material.getMaterial("groundMtl").setDisplacementMapping(false);
 		
 
 		Material brick = new Material("brickMtl");
